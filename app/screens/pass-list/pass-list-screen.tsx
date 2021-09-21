@@ -1,25 +1,44 @@
 import React from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle } from "react-native"
-import { Screen, Text } from "../../components"
+import { View, ViewStyle } from "react-native"
+import { Screen } from "../../components"
+import { Button, Icon, Layout, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { color } from "../../theme"
-
-const ROOT: ViewStyle = {
-  backgroundColor: color.palette.black,
-  flex: 1,
-}
+import { translate } from "../../i18n"
 
 export const PassListScreen = observer(function PassListScreen() {
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
+  const styles = useStyleSheet(stylesScreen)
 
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (
-    <Screen style={ROOT} preset="scroll">
-      <Text preset="header" text="Options" />
+    <Screen style={styles.ROOT} backgroundColor={'transparent'} preset="fixed">
+      <Layout style={styles.TITLE}>
+      </Layout>
     </Screen>
   )
+})
+
+const stylesScreen = StyleService.create({
+  ROOT: {
+    flex: 1,
+    marginTop: 16,
+    // width: 400
+    width: '100%',
+    heigth: '100%'
+  },
+  TITLE: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: 'transparent'
+  },
+  ADDBTN: {
+    marginLeft: 'auto'
+  }
 })

@@ -26,12 +26,15 @@ export const presets = {
       backgroundColor: color.background,
       flex: 1,
       height: "100%",
+      width: "100%",
     } as ViewStyle,
     inner: {
       justifyContent: "flex-start",
       alignItems: "stretch",
       height: "100%",
       width: "100%",
+      flex: 1,
+      paddingHorizontal: 16
     } as ViewStyle,
   },
 
@@ -45,8 +48,14 @@ export const presets = {
       backgroundColor: color.background,
       flex: 1,
       height: "100%",
+      width: "100%",
     } as ViewStyle,
-    inner: { justifyContent: "flex-start", alignItems: "stretch" } as ViewStyle,
+    inner: {
+      justifyContent: "flex-start",
+      alignItems: "stretch",
+      flex: 1,
+      paddingHorizontal: 16
+    } as ViewStyle,
   },
 }
 

@@ -16,6 +16,10 @@
     "passList": "Pass List",
     "options": "Options"
   },
+  "passList":{
+    "title": "Green Pass list",
+    "add": "Add"
+  },
   "demoScreen": {
     "howTo": "HOW TO",
     "title": "What’s In This Stack?",

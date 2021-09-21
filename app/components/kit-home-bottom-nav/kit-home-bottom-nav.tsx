@@ -48,7 +48,7 @@ export const KitHomeBottomNav: KitHomeBottomNavCompound = observer(function KitH
   return (
     <Layout style={styles.LAYOUT}>
       <KitHomeBottomNavContex.Provider value={selectedIndex}>
-        <Layout style={styles.SCREEN}>{props.children}</Layout>
+        {props.children}
       </KitHomeBottomNavContex.Provider>
       <BottomNavigation
         style={styles.BOTTOMNAV}
@@ -76,12 +76,9 @@ const stylesScreen = StyleService.create({
   BOTTOMNAV: {
     marginTop: 8,
   },
-  SCREEN: {
-    flex: 1,
-    backgroundColor: '#0000000'
-  },
   LAYOUT: {
     zIndex: -1,
+    position: 'relative',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
