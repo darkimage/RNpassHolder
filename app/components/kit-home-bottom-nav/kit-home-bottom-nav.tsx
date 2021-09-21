@@ -28,17 +28,14 @@ interface KitHomeBottomNavCompound extends React.FunctionComponent<KitHomeBottom
   Screen: React.FunctionComponent<KitHomeBottomNavScreenProps>
 }
 
-const PersonIcon = (props) => (
-  <Icon {...props} name='person-outline'/>
+const ListIcon = (props) => (
+  <Icon {...props} name='list-outline'/>
 );
 
-const BellIcon = (props) => (
-  <Icon {...props} name='bell-outline'/>
+const OptionsIcon = (props) => (
+  <Icon {...props} name='options-2'/>
 );
 
-const EmailIcon = (props) => (
-  <Icon {...props} name='email-outline'/>
-);
 
 /**
  * Describe your component here
@@ -58,8 +55,8 @@ export const KitHomeBottomNav: KitHomeBottomNavCompound = observer(function KitH
         selectedIndex={selectedIndex}
         onSelect={(index: number) => setSelectedIndex(index)}
       >
-        <BottomNavigationTab title={translate('bottomNav.passList')} icon={PersonIcon}/>
-        <BottomNavigationTab title={translate('bottomNav.options')} icon={BellIcon}/>
+        <BottomNavigationTab title={translate('bottomNav.passList')} icon={ListIcon}/>
+        <BottomNavigationTab title={translate('bottomNav.options')} icon={OptionsIcon}/>
       </BottomNavigation>
     </Layout>
   )
