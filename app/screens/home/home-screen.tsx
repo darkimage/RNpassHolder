@@ -1,10 +1,12 @@
 import React, { useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { KitHeader, KitThemeSwitch, KitTitle, Screen } from "../../components"
+import { KitHeader, KitHomeBottomNav, KitThemeSwitch, KitTitle, Screen } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../../models"
 import { Layout, StyleService, Text, useStyleSheet } from "@ui-kitten/components"
 import { testKeychain, testREALM } from "../../library-tests"
+
+const Test = () => { return <Text>Prova</Text> }
 
 export const HomeScreen = observer(function HomeScreen() {
   const styles = useStyleSheet(styleScreen)
@@ -22,12 +24,12 @@ export const HomeScreen = observer(function HomeScreen() {
   }, [])
 
   return (
-    <Screen style={styles.ROOT} preset="scroll" backgroundColor={'transparent'}>
+    <Screen style={styles.ROOT} preset="fixed" backgroundColor={'transparent'}>
       <Layout style={styles.ROOT}>
         <KitHeader setStatusBar={!lockedStore.locked} title={<KitTitle />} accessoryLeft={<KitThemeSwitch />} />
-        <Layout style={styles.LAYOUT}>
-          <Text category="h3">Test</Text>
-        </Layout>
+        <KitHomeBottomNav>
+          <KitHomeBottomNav.Screen component={<Test/>} tabID={0} />
+        </KitHomeBottomNav>
       </Layout>
     </Screen>
   )
@@ -43,6 +45,10 @@ const styleScreen = StyleService.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#0000000'
+  },
+  SCREEN: {
+    flex: 1,
     backgroundColor: '#0000000'
   }
 })
