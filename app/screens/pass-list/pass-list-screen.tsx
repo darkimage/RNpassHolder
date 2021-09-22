@@ -16,7 +16,7 @@ export const PassListScreen = observer(function PassListScreen() {
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (
-    <Screen style={styles.ROOT} backgroundColor={'transparent'} preset="fixed">
+    <Screen style={styles.ROOT} preset="fixed">
       <Layout style={styles.TITLE}>
       </Layout>
     </Screen>

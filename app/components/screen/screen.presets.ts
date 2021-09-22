@@ -23,7 +23,7 @@ export const presets = {
    */
   fixed: {
     outer: {
-      backgroundColor: color.background,
+      backgroundColor: 'transparent',
       flex: 1,
       height: "100%",
       width: "100%",
@@ -45,7 +45,7 @@ export const presets = {
    */
   scroll: {
     outer: {
-      backgroundColor: color.background,
+      backgroundColor: 'transparent',
       flex: 1,
       height: "100%",
       width: "100%",

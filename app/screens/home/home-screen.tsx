@@ -5,7 +5,7 @@ import { KitHeader, KitHomeBottomNav, KitThemeSwitch, KitTitle, Screen } from ".
 import { useStores } from "../../models"
 import { Button, Icon, Layout, StyleService, Text, useStyleSheet } from "@ui-kitten/components"
 import { testKeychain, testREALM } from "../../library-tests"
-import { PassListScreen } from ".."
+import { OptionsScreen, PassListScreen } from ".."
 import { translate } from "../../i18n"
 import { useNavigation } from "@react-navigation/core"
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
@@ -52,15 +52,17 @@ export const HomeScreen:  FC<StackScreenProps<NavigatorParamList, "home">> = obs
   }, [])
 
   return (
-    <Screen style={styles.ROOT} preset="fixed" backgroundColor={'transparent'}>
+    <Screen style={styles.ROOT} preset="fixed">
       <Layout style={styles.ROOT}>
-        <KitHeader setStatusBar={!lockedStore.locked}
+        <KitHeader
+          setStatusBar={!lockedStore.locked}
           title={<KitTitle />}
           accessoryLeft={<KitThemeSwitch />}
           accessoryRight={<AddPass navigation={navigation} />}
         />
         <KitHomeBottomNav>
           <KitHomeBottomNav.Screen component={<PassListScreen />} tabID={0} />
+          <KitHomeBottomNav.Screen component={<OptionsScreen />} tabID={1} />
         </KitHomeBottomNav>
       </Layout>
     </Screen>
