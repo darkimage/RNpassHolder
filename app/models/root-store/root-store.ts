@@ -1,3 +1,4 @@
+import { OptionShowFavoriteModel } from './../option-show-favorite/option-show-favorite';
 import { LockedModel } from './../locked/locked';
 import { StatusbarModel } from './../statusbar/statusbar';
 import { ThemeModel } from './../theme/theme';
@@ -12,7 +13,8 @@ export const RootStoreModel = types.model("RootStore").props({
   characterStore: types.optional(CharacterStoreModel, {} as any),
   themeStore: types.optional(ThemeModel, { current: 'light' } as any),
   statusBarStore: types.optional(StatusbarModel, { backgroundColor: '#A6C1FF' } as any),
-  lockedStore: types.optional(LockedModel, {locked: true} as any)
+  lockedStore: types.optional(LockedModel, { locked: true } as any),
+  optionShowFavoriteStore: types.optional(OptionShowFavoriteModel, {show: true} as any)
 })
 
 /**

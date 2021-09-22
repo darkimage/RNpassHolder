@@ -20,6 +20,9 @@
     "title": "Lista Green Pass",
     "add": "Aggiungi"
   },
+  "options":{
+    "AlwayShowFav": "Mostra pass preferito al lancio"
+  },
   "demoScreen": {
     "howTo": "HOW TO",
     "title": "What’s In This Stack?",

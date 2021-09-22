@@ -20,6 +20,9 @@
     "title": "Green Pass list",
     "add": "Add"
   },
+  "options":{
+    "AlwayShowFav": "Directly show favorite pass"
+  },
   "demoScreen": {
     "howTo": "HOW TO",
     "title": "What’s In This Stack?",

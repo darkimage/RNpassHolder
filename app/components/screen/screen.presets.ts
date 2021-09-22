@@ -34,7 +34,7 @@ export const presets = {
       height: "100%",
       width: "100%",
       flex: 1,
-      paddingHorizontal: 16
+      // paddingHorizontal: 16,
     } as ViewStyle,
   },
 
@@ -54,7 +54,7 @@ export const presets = {
       justifyContent: "flex-start",
       alignItems: "stretch",
       flex: 1,
-      paddingHorizontal: 16
+      // paddingHorizontal: 16,
     } as ViewStyle,
   },
 }
