@@ -1,7 +1,6 @@
 import * as React from "react"
-import { StyleProp, ViewStyle, StyleSheet, View, Animated } from "react-native"
+import { StyleProp, ViewStyle, StyleSheet, View, Animated, useWindowDimensions } from "react-native"
 import { observer } from "mobx-react-lite"
-import { useWindowDimensions } from 'react-native';
 import { BottomNavigation, BottomNavigationTab, Icon, Layout, StyleService, useStyleSheet } from "@ui-kitten/components"
 import { translate } from "../../i18n"
 
