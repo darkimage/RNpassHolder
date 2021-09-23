@@ -69,26 +69,27 @@ const KitHomeBottomNavScreen = observer(function KitHomeBottomNavScreen(props: K
   const tabContext = React.useContext(KitHomeBottomNavContex)
   const { height, width } = useWindowDimensions();
   const styles = useStyleSheet(stylesScreen)
+  const [prevID, setPrevID] = React.useState(props.tabID)
   const slideIn = React.useRef(new Animated.Value(width)).current
 
   React.useEffect(() => {
+    slideIn.setValue(tabContext < prevID ? -width : width)
     if (props.tabID === tabContext) {
       Animated.spring(slideIn,{
         toValue: 0,
         useNativeDriver: true
       }).start((res) => {
         if (res.finished === false) {
-          slideIn.setValue(width)
+          slideIn.setValue(tabContext < prevID ? -width : width)
         }
       });
-    } else {
-      slideIn.setValue(width)
     }
+    setPrevID(tabContext)
   }, [tabContext])
 
   return (
     props.tabID === tabContext && (
-    <Animated.View style={[styles.NAVSCREEN, {transform: [{translateX: slideIn}]}]}>
+      <Animated.View style={[styles.NAVSCREEN, { transform: [{ translateX: slideIn }] }]}>
       {props.component}
     </Animated.View>
   ))

@@ -18,6 +18,7 @@ export const PassListScreen = observer(function PassListScreen() {
   return (
     <Screen style={styles.ROOT} preset="fixed">
       <Layout style={styles.TITLE}>
+        <Text>PROVA</Text>
       </Layout>
     </Screen>
   )
