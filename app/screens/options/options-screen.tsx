@@ -22,8 +22,13 @@ const OptionsShowFavoriteToggle = observer(() => {
   )
 })
 
-const optionsData: Array<KitFieldProps> = [
+interface OptionListItem extends KitFieldProps{
+  key: string | number
+}
+
+const optionsData: Array<OptionListItem> = [
   {
+    key: 'AlwayShowFav',
     label: translate('options.AlwayShowFav'),
     accessoryRight: <OptionsShowFavoriteToggle />
   }

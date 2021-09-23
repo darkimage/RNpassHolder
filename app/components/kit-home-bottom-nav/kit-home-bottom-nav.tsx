@@ -1,7 +1,7 @@
 import * as React from "react"
-import { StyleProp, ViewStyle, StyleSheet } from "react-native"
+import { StyleProp, ViewStyle, StyleSheet, View, Animated } from "react-native"
 import { observer } from "mobx-react-lite"
-
+import { useWindowDimensions } from 'react-native';
 import { BottomNavigation, BottomNavigationTab, Icon, Layout, StyleService, useStyleSheet } from "@ui-kitten/components"
 import { translate } from "../../i18n"
 
@@ -67,7 +67,31 @@ export const KitHomeBottomNav: KitHomeBottomNavCompound = observer(function KitH
 
 const KitHomeBottomNavScreen = observer(function KitHomeBottomNavScreen(props: KitHomeBottomNavScreenProps) {
   const tabContext = React.useContext(KitHomeBottomNavContex)
-  return props.tabID === tabContext && props.component
+  const { height, width } = useWindowDimensions();
+  const styles = useStyleSheet(stylesScreen)
+  const slideIn = React.useRef(new Animated.Value(width)).current
+
+  React.useEffect(() => {
+    if (props.tabID === tabContext) {
+      Animated.spring(slideIn,{
+        toValue: 0,
+        useNativeDriver: true
+      }).start((res) => {
+        if (res.finished === false) {
+          slideIn.setValue(width)
+        }
+      });
+    } else {
+      slideIn.setValue(width)
+    }
+  }, [tabContext])
+
+  return (
+    props.tabID === tabContext && (
+    <Animated.View style={[styles.NAVSCREEN, {transform: [{translateX: slideIn}]}]}>
+      {props.component}
+    </Animated.View>
+  ))
 })
 
 KitHomeBottomNav.Screen = KitHomeBottomNavScreen;
@@ -84,4 +108,9 @@ const stylesScreen = StyleService.create({
     justifyContent: 'center',
     backgroundColor: '#0000000'
   },
+  NAVSCREEN: {
+    flex: 1,
+    width: "100%",
+    position: 'relative',
+  }
 });
