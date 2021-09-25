@@ -4,12 +4,14 @@ import { KitHeader, KitHomeBottomNav, KitThemeSwitch, KitTitle, Screen } from ".
 // import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../../models"
 import { Button, Icon, Layout, StyleService, Text, useStyleSheet } from "@ui-kitten/components"
-import { testKeychain, testREALM } from "../../library-tests"
+import { testLibraries } from "../../library-tests"
 import { OptionsScreen, PassListScreen } from ".."
 import { translate } from "../../i18n"
 import { useNavigation } from "@react-navigation/core"
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
+import Realm, { Collection, CollectionChangeSet, Results } from "realm";
+import { TaskSchema, useGetPassListQuery, useRealmResultsHook } from "../../services/database"
 
 const AddIcon = (props) => (
   <Icon {...props} name='plus-outline'/>
@@ -38,18 +40,33 @@ const AddPass = (props: AppPaddProps) => {
 
 export const HomeScreen:  FC<StackScreenProps<NavigatorParamList, "home">> = observer(function HomeScreen({navigation}) {
   const styles = useStyleSheet(styleScreen)
-  const {lockedStore} = useStores()
+  const { lockedStore } = useStores()
+  const query = useGetPassListQuery()
+  const tasklist = useRealmResultsHook(query)
 
   useEffect(() => {
     lockedStore.setLocked(false)
-    const testLibraries = async () => {
-      console.log("================== TESTING LIBRARIES =================")
-      await testREALM()
-      await testKeychain() 
-      console.log("================ TESTING LIBRARIES END ===============")
-    }
-    testLibraries()
   }, [])
+
+  const addTasks = async () => {
+    const realm = await Realm.open({
+      path: "myrealm",
+      schema: [TaskSchema],
+    });
+    realm.write(() => {
+      realm.create("Task", {
+        _id: Math.round(Math.random() * 100),
+        name: "go grocery shopping",
+        status: "Open",
+      });
+      realm.create("Task", {
+        _id: Math.round(Math.random() * 100),
+        name: "go exercise",
+        status: "Open",
+      });
+      console.log(`created two tasks`);
+    });
+  }
 
   return (
     <Screen style={styles.ROOT} preset="fixed">
@@ -60,10 +77,14 @@ export const HomeScreen:  FC<StackScreenProps<NavigatorParamList, "home">> = obs
           accessoryLeft={<KitThemeSwitch />}
           accessoryRight={<AddPass navigation={navigation} />}
         />
-        <KitHomeBottomNav>
+        <Layout>
+          {tasklist?.map((task) => <Text key={task._id}>{JSON.stringify(task, null, 2)}</Text>)}
+        </Layout>
+        <Button onPress={addTasks} >Add task</Button>
+        {/* <KitHomeBottomNav>
           <KitHomeBottomNav.Screen component={<PassListScreen />} tabID={0} />
           <KitHomeBottomNav.Screen component={<OptionsScreen />} tabID={1} />
-        </KitHomeBottomNav>
+        </KitHomeBottomNav> */}
       </Layout>
     </Screen>
   )
