@@ -53,7 +53,7 @@ export const presets = {
     inner: {
       justifyContent: "flex-start",
       alignItems: "stretch",
-      flex: 1,
+      // flex: 1, // Removing this fixes the scrollview
       // paddingHorizontal: 16,
     } as ViewStyle,
   },

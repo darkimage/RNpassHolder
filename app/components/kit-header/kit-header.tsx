@@ -31,10 +31,10 @@ export const KitHeader = observer(function KitHeader(props: KitHeaderProps) {
   }, [props.setStatusBar, theme])
 
   return (
-    <Layout style={style.LAYOUT}>
+    <Layout style={styles.ROOT}>
       <TopNavigation
         alignment='center'
-        style={style.NAV}
+        style={[style.LAYOUT, props.style]}
         {...props} />
     </Layout>
   )
@@ -42,15 +42,19 @@ export const KitHeader = observer(function KitHeader(props: KitHeaderProps) {
 
 
 const styles = StyleService.create({
+  ROOT: {
+    backgroundColor: 'transparent',
+    position: 'absolute',
+    minHeight: 64,
+    width: '100%',
+    zIndex: 1,
+  },
   LAYOUT: {
     backgroundColor: 'background-basic-color-1',
-    elevation: 23,
+    elevation: 12,
     shadowColor: 'border-primary-color-5',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    overflow: 'hidden'
-  },
-  NAV: {
-    backgroundColor: 'transparent',
+    overflow: 'hidden',
   }
 });

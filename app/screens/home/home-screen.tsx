@@ -12,6 +12,7 @@ import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
 import Realm, { Collection, CollectionChangeSet, Results } from "realm";
 import { TaskSchema, useGetPassListQuery, useRealmResultsHook } from "../../services/database"
+import { View } from "react-native"
 
 const AddIcon = (props) => (
   <Icon {...props} name='plus-outline'/>
@@ -49,6 +50,7 @@ export const HomeScreen:  FC<StackScreenProps<NavigatorParamList, "home">> = obs
   }, [])
 
   const addTasks = async () => {
+    console.log("BUTTON PUSHED")
     const realm = await Realm.open({
       path: "myrealm",
       schema: [TaskSchema],
@@ -68,33 +70,32 @@ export const HomeScreen:  FC<StackScreenProps<NavigatorParamList, "home">> = obs
     });
   }
 
-  return (
-    <Screen style={styles.ROOT} preset="fixed">
-      <Layout style={styles.ROOT}>
-        <KitHeader
-          setStatusBar={!lockedStore.locked}
-          title={<KitTitle />}
-          accessoryLeft={<KitThemeSwitch />}
-          accessoryRight={<AddPass navigation={navigation} />}
-        />
-        <Layout>
-          {tasklist?.map((task) => <Text key={task._id}>{JSON.stringify(task, null, 2)}</Text>)}
-        </Layout>
+  return (<View style={styles.VIEWROOT}>
+    <KitHeader
+      setStatusBar={!lockedStore.locked}
+      title={<KitTitle />}
+      accessoryLeft={<KitThemeSwitch />}
+      accessoryRight={<AddPass navigation={navigation} />}
+    />
+    <Screen style={styles.ROOT} preset="scroll">
         <Button onPress={addTasks} >Add task</Button>
-        {/* <KitHomeBottomNav>
-          <KitHomeBottomNav.Screen component={<PassListScreen />} tabID={0} />
-          <KitHomeBottomNav.Screen component={<OptionsScreen />} tabID={1} />
-        </KitHomeBottomNav> */}
-      </Layout>
+        {tasklist?.map((task) => <Text key={task._id}>{JSON.stringify(task, null, 2)}</Text>)}
     </Screen>
-  )
+    {/* <KitHomeBottomNav>
+      <KitHomeBottomNav.Screen component={<PassListScreen />} tabID={0} />
+      <KitHomeBottomNav.Screen component={<OptionsScreen />} tabID={1} />
+    </KitHomeBottomNav> */}
+  </View>)
 })
 
 const styleScreen = StyleService.create({
-  ROOT: {
-    flex: 1,
+  VIEWROOT: {
     backgroundColor: 'background-basic-color-4',
-    paddingHorizontal: 0
+    flex:1
+  },
+  ROOT: {
+    paddingHorizontal: 0,
+    paddingTop: 64
   },
   LAYOUT: {
     zIndex: -1,
