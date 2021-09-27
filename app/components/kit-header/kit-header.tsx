@@ -4,6 +4,8 @@ import { observer } from "mobx-react-lite"
 import { Layout, Text, useStyleSheet, StyleService, useTheme, TopNavigation, TopNavigationProps } from "@ui-kitten/components"
 import { KitStatusbar } from ".."
 import { useStores } from "../../models"
+import { useNavigation } from "@react-navigation/core"
+import { useIsFocused } from '@react-navigation/native'
 
 export interface KitHeaderProps extends TopNavigationProps{
   setStatusBar?: boolean
@@ -17,18 +19,22 @@ export interface KitHeaderProps extends TopNavigationProps{
  * Application Header component
  */
 export const KitHeader = observer(function KitHeader(props: KitHeaderProps) {
+  const focused = useIsFocused()
   const style = useStyleSheet(styles);
   const theme = useTheme()
   const {statusBarStore} = useStores()
 
   React.useEffect(() => {
-    if (props.setStatusBar) {
-      console.log(((style.LAYOUT) as any).backgroundColor)
-      statusBarStore.setBgColor(((style.LAYOUT) as any).backgroundColor)
+    console.log("RENDERED")
+    if (focused) {
+      if (props.setStatusBar) {
+        console.log(((style.LAYOUT) as any).backgroundColor)
+        statusBarStore.setBgColor(((style.LAYOUT) as any).backgroundColor)
+      }
+      else
+        statusBarStore.setBgColor(theme['color-primary-default'])
     }
-    else
-      statusBarStore.setBgColor(theme['color-primary-default'])
-  }, [props.setStatusBar, theme])
+  }, [props.setStatusBar, theme, focused])
 
   return (
     <Layout style={styles.ROOT}>

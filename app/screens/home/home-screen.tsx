@@ -34,7 +34,7 @@ const AddPass = (props: AppPaddProps) => {
     accessoryRight={AddIcon} />
 }
 
-export const HomeScreen:  FC<StackScreenProps<NavigatorParamList, "home">> = observer(function HomeScreen({navigation}) {
+export const HomeScreen: FC<StackScreenProps<NavigatorParamList, "home">> = observer(function HomeScreen({navigation}) {
   const styles = useStyleSheet(styleScreen)
   const { lockedStore } = useStores()
 

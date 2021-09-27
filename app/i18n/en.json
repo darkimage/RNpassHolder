@@ -23,6 +23,9 @@
   "options":{
     "AlwayShowFav": "Directly show favorite pass"
   },
+  "addPass":{
+    "addTitle": "Add Green Pass" 
+  },
   "demoScreen": {
     "howTo": "HOW TO",
     "title": "What’s In This Stack?",

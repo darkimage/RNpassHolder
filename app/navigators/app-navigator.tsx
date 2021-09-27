@@ -8,7 +8,7 @@ import React, { useEffect } from "react"
 import { AppState, useColorScheme } from "react-native"
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { WelcomeScreen, DemoScreen, DemoListScreen, HomeScreen, AddPassScreen } from "../screens"
+import { WelcomeScreen, DemoScreen, DemoListScreen, HomeScreen, AddPassScreen, QrScanDevScreen } from "../screens"
 import { navigationRef } from "./navigation-utilities"
 import { testKeychain, testREALM } from "../library-tests"
 import { useStores } from "../models"
@@ -31,7 +31,8 @@ export type NavigatorParamList = {
   welcome: undefined
   demo: undefined
   demoList: undefined,
-  addPass: undefined
+  addPass: undefined,
+  qrTest: undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
@@ -50,6 +51,7 @@ const AppStack = () => {
       <Stack.Screen name="demo" component={DemoScreen} />
       <Stack.Screen name="addPass" component={AddPassScreen} />
       <Stack.Screen name="demoList" component={DemoListScreen} />
+      <Stack.Screen name="qrTest" component={QrScanDevScreen} />
     </Stack.Navigator>
   )
 }

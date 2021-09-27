@@ -9,6 +9,8 @@ import { color } from "../../theme"
 import { translate } from "../../i18n"
 import Realm, { Collection, CollectionChangeSet, Results } from "realm";
 import { useGetPassListQuery, useRealmResultsHook } from "../../services/database"
+import { useNavigation } from "@react-navigation/native"
+import { navigate } from "../../navigators"
 
 export const PassListScreen = observer(function PassListScreen() {
   // Pull in one of our MST stores
@@ -18,10 +20,10 @@ export const PassListScreen = observer(function PassListScreen() {
   const tasklist = useRealmResultsHook(query)
 
   // Pull in navigation via hook
-  // const navigation = useNavigation()
+
   return (
     <Screen style={styles.ROOT} preset="scroll">
-      <Button>Add test pass</Button>
+      <Button onPress={()=>navigate("qrTest")}>go to qr test screen</Button>
       {tasklist?.map((task) => <Text key={task._id}>{JSON.stringify(task, null, 2)}</Text>)}
     </Screen>
   )
