@@ -7,39 +7,29 @@ import { Button, Icon, Layout, StyleService, Text, useStyleSheet } from '@ui-kit
 // import { useStores } from "../../models"
 import { color } from "../../theme"
 import { translate } from "../../i18n"
+import Realm, { Collection, CollectionChangeSet, Results } from "realm";
+import { useGetPassListQuery, useRealmResultsHook } from "../../services/database"
 
 export const PassListScreen = observer(function PassListScreen() {
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
   const styles = useStyleSheet(stylesScreen)
+  const query = useGetPassListQuery()
+  const tasklist = useRealmResultsHook(query)
 
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (
-    <Screen style={styles.ROOT} preset="fixed">
-      <Layout style={styles.TITLE}>
-        <Text>PROVA</Text>
-      </Layout>
+    <Screen style={styles.ROOT} preset="scroll">
+      <Button>Add test pass</Button>
+      {tasklist?.map((task) => <Text key={task._id}>{JSON.stringify(task, null, 2)}</Text>)}
     </Screen>
   )
 })
 
 const stylesScreen = StyleService.create({
   ROOT: {
-    flex: 1,
-    marginTop: 16,
-    // width: 400
+    paddingTop: 64,
     width: '100%',
-    heigth: '100%'
   },
-  TITLE: {
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '100%',
-    flexDirection: 'row',
-    backgroundColor: 'transparent'
-  },
-  ADDBTN: {
-    marginLeft: 'auto'
-  }
 })

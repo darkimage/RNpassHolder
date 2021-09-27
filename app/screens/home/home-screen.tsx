@@ -1,17 +1,12 @@
-import React, { FC, useEffect, useLayoutEffect, useState } from "react"
+import React, { FC, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { KitHeader, KitHomeBottomNav, KitThemeSwitch, KitTitle, Screen } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../../models"
-import { Button, Icon, Layout, StyleService, Text, useStyleSheet } from "@ui-kitten/components"
-import { testLibraries } from "../../library-tests"
+import { Button, Icon, StyleService, useStyleSheet } from "@ui-kitten/components"
 import { OptionsScreen, PassListScreen } from ".."
-import { translate } from "../../i18n"
-import { useNavigation } from "@react-navigation/core"
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
-import Realm, { Collection, CollectionChangeSet, Results } from "realm";
-import { TaskSchema, useGetPassListQuery, useRealmResultsHook } from "../../services/database"
 import { View } from "react-native"
 
 const AddIcon = (props) => (
@@ -35,40 +30,17 @@ const AddPass = (props: AppPaddProps) => {
     onLayout={calCircleStyle}
     // appearance='outline'
     style={[circleSytle, styles.ADDBTN]}
-    onPress={() => props.navigation.navigate('demo')}
+    onPress={() => props.navigation.navigate('addPass')}
     accessoryRight={AddIcon} />
 }
 
 export const HomeScreen:  FC<StackScreenProps<NavigatorParamList, "home">> = observer(function HomeScreen({navigation}) {
   const styles = useStyleSheet(styleScreen)
   const { lockedStore } = useStores()
-  const query = useGetPassListQuery()
-  const tasklist = useRealmResultsHook(query)
 
   useEffect(() => {
     lockedStore.setLocked(false)
   }, [])
-
-  const addTasks = async () => {
-    console.log("BUTTON PUSHED")
-    const realm = await Realm.open({
-      path: "myrealm",
-      schema: [TaskSchema],
-    });
-    realm.write(() => {
-      realm.create("Task", {
-        _id: Math.round(Math.random() * 100),
-        name: "go grocery shopping",
-        status: "Open",
-      });
-      realm.create("Task", {
-        _id: Math.round(Math.random() * 100),
-        name: "go exercise",
-        status: "Open",
-      });
-      console.log(`created two tasks`);
-    });
-  }
 
   return (<View style={styles.VIEWROOT}>
     <KitHeader
@@ -77,14 +49,12 @@ export const HomeScreen:  FC<StackScreenProps<NavigatorParamList, "home">> = obs
       accessoryLeft={<KitThemeSwitch />}
       accessoryRight={<AddPass navigation={navigation} />}
     />
-    <Screen style={styles.ROOT} preset="scroll">
-        <Button onPress={addTasks} >Add task</Button>
-        {tasklist?.map((task) => <Text key={task._id}>{JSON.stringify(task, null, 2)}</Text>)}
+    <Screen style={styles.ROOT} preset="fixed">
+      <KitHomeBottomNav>
+        <KitHomeBottomNav.Screen component={<PassListScreen />} tabID={0} />
+        <KitHomeBottomNav.Screen component={<OptionsScreen />} tabID={1} />
+      </KitHomeBottomNav>
     </Screen>
-    {/* <KitHomeBottomNav>
-      <KitHomeBottomNav.Screen component={<PassListScreen />} tabID={0} />
-      <KitHomeBottomNav.Screen component={<OptionsScreen />} tabID={1} />
-    </KitHomeBottomNav> */}
   </View>)
 })
 

@@ -1,16 +1,49 @@
-import { Collection } from 'realm';
+import Realm, { ObjectSchema } from 'realm';
 import { useEffect, useState } from "react"
 
-
-export const TaskSchema = {
-  name: "Task",
+export const PassSchema: ObjectSchema = {
+  name: "Pass",
+  primaryKey: 'added',
   properties: {
-    _id: "int",
-    name: "string",
-    status: "string?",
-  },
-  primaryKey: "_id",
-};
+    added: {
+      type: 'string',
+      optional: false,
+      indexed: true
+    },
+    qr: 'string',
+    pdf: {
+      type: 'string',
+      optional: true
+    },
+    name: {
+      type: 'string',
+      optional: true,
+      default: null
+    },
+    surname: {
+      type: 'string',
+      optional: true,
+      default: null
+    },
+    expires: {
+      type: 'string',
+      optional: true,
+      default: null
+    }
+  }
+}
+
+export async function getRealmDatabase() {
+  if (__DEV__) {
+    Realm.deleteFile({
+      path: "db.realm"
+    })
+  }
+  return await Realm.open({
+    path: "db.realm",
+    schema: [PassSchema],
+  });
+}
 
 
 export function useGetPassListQuery() {
@@ -19,15 +52,8 @@ export function useGetPassListQuery() {
   
   useEffect(() => {
     const setupQuery = async () => {
-      Realm.deleteFile({
-        path: "myrealm"
-      })
-      const realm = await Realm.open({
-        path: "myrealm",
-        schema: [TaskSchema],
-      });
-      const queryRes = () => realm.objects("Task")
-      console.log("QUERY RES:",queryRes)
+      const realm = await getRealmDatabase();
+      const queryRes = () => realm.objects("Pass")
       setQuery(() => queryRes)
     }
     setupQuery()
@@ -45,16 +71,17 @@ export function useRealmResultsHook(query, args = []) {
 
   useEffect(() => {
     function handleChange(newData) {
-      console.log("NEW DATA INCOMING")
+      console.log("New data", newData)
       setData([...newData])                   // different object and execute a re-render
     }
 
     const dataQuery = args ? query(...args) : query()
     if (dataQuery !== null) {
-      console.log("DATAQUEY VALID SETIING UP HANDLE CHANGE")
+      console.log("Adding listener for query")
       dataQuery?.addListener(handleChange)
 
       return () => {
+        console.log("Removing handle listening for query")
         dataQuery.removeAllListeners()
       }
     } else {

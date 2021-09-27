@@ -1,3 +1,4 @@
+/* eslint-disable import/first */
 // This is the first file that ReactNative will run when it starts up.
 //
 // We jump out of here immediately and into our main entry point instead.
@@ -7,6 +8,7 @@
 // side effect of breaking other tooling like mobile-center and react-native-rename.
 //
 // It's easier just to leave it here.
+global.Buffer = require('buffer').Buffer;
 import App from "./app/app.tsx"
 import { AppRegistry } from "react-native"
 

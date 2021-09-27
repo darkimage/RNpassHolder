@@ -52,6 +52,7 @@ export const OptionsScreen = observer(function OptionsScreen() {
   return (
     <Screen style={styles.ROOT} preset="fixed">
       <FlatList
+        style={styles.LISTROOT}
         data={optionsData}
         renderItem={renderItem}
         ItemSeparatorComponent={() => <Divider style={styles.ITEMDIVIDER} />}
@@ -64,8 +65,6 @@ export const OptionsScreen = observer(function OptionsScreen() {
 
 const stylesScreen = StyleService.create({
   ROOT: {
-    flex: 1,
-    marginTop: 16,
     // width: 400
     width: '100%',
     heigth: '100%'
@@ -80,5 +79,8 @@ const stylesScreen = StyleService.create({
   },
   ITEMDIVIDER: {
     marginVertical: 4
+  },
+  LISTROOT: {
+    paddingTop: 64
   }
 })
