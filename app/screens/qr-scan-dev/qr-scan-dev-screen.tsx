@@ -1,6 +1,6 @@
 /* eslint-disable react-native/sort-styles */
 /* eslint-disable react-native/no-color-literals */
-import React from "react"
+import React, { useState } from "react"
 import { observer } from "mobx-react-lite"
 import {
   Text,
@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
+import { Button } from "@ui-kitten/components";
+import { QrScanner } from "../../components";
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
@@ -17,6 +19,7 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 export const QrScanDevScreen = observer(function QrScanDevScreen() {
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
+  const [showScanner, setShowScanner] = useState(false)
 
   const onSuccess = (e) => {
     console.log(e)
@@ -24,22 +27,14 @@ export const QrScanDevScreen = observer(function QrScanDevScreen() {
 
   // Pull in navigation via hook
   // const navigation = useNavigation()
-  return (
-    <QRCodeScanner
-      onRead={onSuccess}
-      topContent={
-        <Text style={styles.centerText}>
-          Go to{' '}
-          <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on
-          your computer and scan the QR code.
-        </Text>
-      }
-      bottomContent={
-        <TouchableOpacity style={styles.buttonTouchable}>
-          <Text style={styles.buttonText}>OK. Got it!</Text>
-        </TouchableOpacity>
-      }
+  return (<>
+    <Button onPress={() => setShowScanner(true)}>Mostra scanner</Button>
+    <QrScanner
+      show={showScanner}
+      onRead={(e) => { setShowScanner(false); console.log(e)}}
+      onCancel={() => setShowScanner(false)}
     />
+  </>
   );
 })
 

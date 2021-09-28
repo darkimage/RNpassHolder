@@ -26,6 +26,9 @@
   "addPass":{
     "addTitle": "Add Green Pass" 
   },
+  "qrCodeScanner":{
+    "title": "Scan a QR Code" 
+  },
   "demoScreen": {
     "howTo": "HOW TO",
     "title": "What’s In This Stack?",
