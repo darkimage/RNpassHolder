@@ -5,14 +5,15 @@
  * and a "main" flow which the user will use once logged in.
  */
 import React, { useEffect } from "react"
-import { AppState, useColorScheme } from "react-native"
-import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native"
+import { AppState, useColorScheme, View, ViewStyle } from "react-native"
+import { NavigationContainer, DefaultTheme, DarkTheme, Theme, useTheme as useNavTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { WelcomeScreen, DemoScreen, DemoListScreen, HomeScreen, AddPassScreen, QrScanDevScreen } from "../screens"
 import { navigationRef } from "./navigation-utilities"
 import { testKeychain, testREALM } from "../library-tests"
 import { useStores } from "../models"
 import { KitStatusbar } from "../components"
+import { useTheme } from "@ui-kitten/components"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -39,11 +40,17 @@ export type NavigatorParamList = {
 const Stack = createNativeStackNavigator<NavigatorParamList>()
 
 const AppStack = () => {
+  const {colors} = useNavTheme()
+
+  const rootViewStyle: ViewStyle = {
+    flex: 1,
+    backgroundColor: colors.background
+  }
+
   return (
+    <View style={rootViewStyle}> 
     <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
+      screenOptions={{headerShown: false}}
       initialRouteName="home"
     >
       <Stack.Screen name="welcome" component={WelcomeScreen} />
@@ -52,15 +59,35 @@ const AppStack = () => {
       <Stack.Screen name="addPass" component={AddPassScreen} />
       <Stack.Screen name="demoList" component={DemoListScreen} />
       <Stack.Screen name="qrTest" component={QrScanDevScreen} />
-    </Stack.Navigator>
+      </Stack.Navigator>
+    </View>
   )
 }
+
 
 interface NavigationProps extends Partial<React.ComponentProps<typeof NavigationContainer>> {}
 
 export const AppNavigator = (props: NavigationProps) => {
-  const colorScheme = useColorScheme()
+  const { themeStore } = useStores()
+  const theme = useTheme()
   const {lockedStore} = useStores()
+  
+  const KitThemeLight: Theme = {
+    dark: false,
+    colors: {
+      primary: theme['color-primary-500'],
+      background: theme['background-basic-color-4'],
+      card: theme['background-basic-color-1'],
+      text: theme['text-basic-color'],
+      border: theme['color-basic-default-border'],
+      notification: theme['color-danger-500'],
+    },
+  };
+
+  const KitThemedark: Theme = {
+    dark: true,
+    colors: {...KitThemeLight.colors}
+  }
 
   useEffect(() => {
     if (AppState.currentState === 'background') {
@@ -72,7 +99,7 @@ export const AppNavigator = (props: NavigationProps) => {
   return (
     <NavigationContainer
       ref={navigationRef}
-      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+      theme={themeStore.current === 'dark' ? KitThemedark : KitThemeLight}
       {...props}
     >
       <AppStack />

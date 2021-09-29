@@ -24,7 +24,9 @@
     "AlwayShowFav": "Directly show favorite pass"
   },
   "addPass":{
-    "addTitle": "Add a Pass" 
+    "addTitle": "Add a Pass",
+    "searchGallery": "Add from Image Gallery",
+    "scanQr": "Add from QR Scan" 
   },
   "qrCodeScanner":{
     "title": "Scan a QR Code" 

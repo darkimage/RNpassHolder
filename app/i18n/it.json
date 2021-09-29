@@ -24,7 +24,9 @@
     "AlwayShowFav": "Mostra pass preferito al lancio"
   },
   "addPass":{
-    "addTitle": "Aggiungi un Pass" 
+    "addTitle": "Aggiungi un Pass",
+    "searchGallery": "Aggiungi dalle Immagini",
+    "scanQr": "Aggiungi da scansione QR" 
   },
   "qrCodeScanner":{
     "title": "Scansiona codice QR" 

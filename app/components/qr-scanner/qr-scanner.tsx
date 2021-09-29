@@ -45,7 +45,7 @@ export const QrScanner = observer(function QrScanner(props: QrScannerProps) {
       >
         <View style={styles.QRSCANNER}>
           <View style={styles.OVERLAY}>
-            <SVGScannerIcon width={200} height={200}  />
+            <SVGScannerIcon fill={"#fff"} fillOpacity={0.7} width={200} height={200}  />
           </View>
           <QRCodeScanner
             onRead={(e) => props.onRead(e)}
