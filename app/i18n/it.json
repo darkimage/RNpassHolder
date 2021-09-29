@@ -1,8 +1,8 @@
 {
   "common": {
     "ok": "OK!",
-    "cancel": "Cancel",
-    "back": "Back"
+    "cancel": "Cancella",
+    "back": "Indietro"
   },
   "errors": {
     "invalidEmail": "Invalid email address."
@@ -24,7 +24,7 @@
     "AlwayShowFav": "Mostra pass preferito al lancio"
   },
   "addPass":{
-    "addTitle": "Add Green Pass" 
+    "addTitle": "Aggiungi un Pass" 
   },
   "qrCodeScanner":{
     "title": "Scansiona codice QR" 

@@ -24,7 +24,7 @@
     "AlwayShowFav": "Directly show favorite pass"
   },
   "addPass":{
-    "addTitle": "Add Green Pass" 
+    "addTitle": "Add a Pass" 
   },
   "qrCodeScanner":{
     "title": "Scan a QR Code" 
