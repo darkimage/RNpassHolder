@@ -1,5 +1,5 @@
 import * as React from "react"
-import { StyleProp, TouchableNativeFeedback, View, ViewProps, ViewStyle } from "react-native"
+import { GestureResponderEvent, StyleProp, TouchableNativeFeedback, View, ViewProps, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
 import { StyleService, useStyleSheet, Text, Layout, TextProps, useTheme } from "@ui-kitten/components"
 import { TouchableHighlight, TouchableOpacity } from "react-native-gesture-handler"
@@ -11,7 +11,8 @@ export interface KitSelectSourceProps extends ViewProps {
   style?: StyleProp<ViewStyle>,
   title?: string
   titleProps?: TextProps,
-  icon?: React.ReactElement
+  icon?: React.ReactElement,
+  onPress?: (event: GestureResponderEvent) => void
 }
 
 /**
@@ -25,7 +26,10 @@ export const KitSelectSource = observer(function KitSelectSource(props: KitSelec
   return (
     <View style={styles.ROOT}>
       <View style={styles.TOUCH}>
-      <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple(theme['color-basic-transparent-focus'], false)}>
+        <TouchableNativeFeedback
+          background={TouchableNativeFeedback.Ripple(theme['color-basic-transparent-focus'], false)}
+          onPress={props.onPress}
+        >
         <Layout style={styles.LAYOUT}>
           <Text
             category="h4"

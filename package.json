@@ -40,6 +40,7 @@
     "apisauce": "2.0.0",
     "base45-js": "^1.0.2",
     "cbor-js": "^0.1.0",
+    "dayjs": "^1.10.7",
     "expo-crypto": "^9.2.0",
     "expo-linear-gradient": "^9.2.0",
     "expo-localization": "9.1.0",

@@ -24,7 +24,7 @@ export const PassListScreen = observer(function PassListScreen() {
   return (
     <Screen style={styles.ROOT} preset="scroll">
       <Button onPress={()=>navigate("qrTest")}>go to qr test screen</Button>
-      {tasklist?.map((task) => <Text key={task._id}>{JSON.stringify(task, null, 2)}</Text>)}
+      {tasklist?.map((task) => <Text key={task.added}>{JSON.stringify(task, null, 2)}</Text>)}
     </Screen>
   )
 })

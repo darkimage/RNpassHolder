@@ -11,7 +11,7 @@ import {
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { Button } from "@ui-kitten/components";
-import { QrScanner } from "../../components";
+import { KitModalLoading, QrScanner } from "../../components";
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
@@ -29,6 +29,7 @@ export const QrScanDevScreen = observer(function QrScanDevScreen() {
   // const navigation = useNavigation()
   return (<>
     <Button onPress={() => setShowScanner(true)}>Mostra scanner</Button>
+    <KitModalLoading show={true}/>
     <QrScanner
       show={showScanner}
       onRead={(e) => { setShowScanner(false); console.log(e)}}

@@ -1,5 +1,7 @@
+import { DecodedQr } from './../qr/greenpass';
 import Realm, { ObjectSchema } from 'realm';
 import { useEffect, useState } from "react"
+import dayjs from 'dayjs'
 
 export const PassSchema: ObjectSchema = {
   name: "Pass",
@@ -10,10 +12,14 @@ export const PassSchema: ObjectSchema = {
       optional: false,
       indexed: true
     },
-    qr: 'string',
-    pdf: {
+    type: {
       type: 'string',
-      optional: true
+      optional: false,
+      indexed: true
+    },
+    qr: {
+      type: 'string',
+      optional: false,
     },
     name: {
       type: 'string',
@@ -21,6 +27,11 @@ export const PassSchema: ObjectSchema = {
       default: null
     },
     surname: {
+      type: 'string',
+      optional: true,
+      default: null
+    },
+    lastVaccination: {
       type: 'string',
       optional: true,
       default: null
@@ -91,4 +102,28 @@ export function useRealmResultsHook(query, args = []) {
   }, [query, ...args])
 
   return data           // this hook will return only the data from realm
+}
+
+
+export async function addPass(passData: DecodedQr) {
+  try {
+    console.log(`ADDING PASS ${passData.qr} TO DATABASE`)
+    const realm = await getRealmDatabase();
+    let pass = null
+    realm.write(() => {
+      pass = realm.create("Pass", {
+        added: dayjs().format(),
+        qr: passData.qr,
+        name: passData.data.name,
+        surname: passData.data.surname,
+        lastVaccination: passData.data.lastVaccination,
+        type: passData.data.type,
+        expires: ''
+      })
+    })
+    return pass
+  } catch (error) {
+    console.error(error)
+    return null
+  }
 }

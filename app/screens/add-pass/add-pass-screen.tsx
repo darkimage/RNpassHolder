@@ -1,16 +1,10 @@
 import React, { FC, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { Image, Platform, View, ViewStyle } from "react-native"
-import { KitHeader, KitSelectSource, Screen, Text } from "../../components"
+import { KitHeader, KitModalLoading, KitSelectSource, QrScanner, Screen, Text } from "../../components"
 import { Button, Icon, Layout, StyleService, TopNavigation, TopNavigationAction, useStyleSheet, useTheme } from "@ui-kitten/components"
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { readFile } from 'react-native-fs'
-import { Buffer } from 'buffer'
-import { decode } from "jpeg-js"
-import jsQR from "jsqr"
-import pako from 'pako'
-import base45 from 'base45-js/lib/base45-js.js'
-import { decodeGreenPassQR } from "../../services/qr"
+import { decodeFromImage, decodeFromString } from "../../services/qr"
 import { useStores } from "../../models"
 import { translate } from "../../i18n"
 import { NavigationProp, useNavigation } from "@react-navigation/core"
@@ -19,9 +13,9 @@ import { NavigatorParamList } from "../../navigators"
 import QRSearchGalleryIcon from '../../../assets/svg/qr-search-icon.svg'
 import QRScanIcon from '../../../assets/svg/qr-scan-icon.svg'
 import { SvgProps } from "react-native-svg"
-const CBOR = require('cbor-js') 
-// import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "../../models"
+import { delay } from "../../utils/delay"
+import { addPass } from "../../services/database"
+import { BarCodeReadEvent } from "react-native-camera"
 
 const BackIcon = (props) => (
   <Icon {...props} name='arrow-back'/>
@@ -33,57 +27,88 @@ const RenderBackAction = (props: { nav: StackNavigationProp<NavigatorParamList,"
 
 export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> = observer(function AddPassScreen({navigation}) {
   const {statusBarStore} = useStores()
-  const [image, setImage] = useState(null);
   const styles = useStyleSheet(stylesScreen)
+  const [showLoading, setShowLoading] = useState(false)
+  const [showScanner, setShowScanner] = useState(false)
   const theme = useTheme()
 
   useEffect(() => {
     statusBarStore.setBgColor(((styles.ROOT) as any).backgroundColor)
   }, [])
 
-  const pickImage = async () => {
-    // launchImageLibrary({mediaType: 'photo'}, async (resp) => {
-    //   if (resp.assets) {
-    //     console.log(resp.assets[0].uri)
-    //     setImage(resp.assets[0])
-    //     // Get the file as raw base binary data
-    //     try {
-    //       console.log(JSON.stringify(await decodeGreenPassQR(resp.assets[0].uri), null, 2))
-    //     } catch (error) {
-    //       console.error(error)
-    //     }
-    //   }
-    // })
-    // launchCamera({ mediaType: 'photo' }, async (resp) => {
-    //   console.log(resp.assets)
-    // })
-  }
-
-  // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
-
   const iconProps: SvgProps = {
     style: styles.ICON,
     fill: theme['color-primary-500'],
     fillOpacity: 0.8
   }
-  // Pull in navigation via hook
-  // const navigation = useNavigation()
-  return (<View style={styles.ROOT}>
-    <KitHeader
-      title={translate('addPass.addTitle')}
-      accessoryLeft={<RenderBackAction nav={navigation} />}
-      style={styles.NAV}
-      alignment='center' />
-    <Screen style={styles.SCREEN} preset="scroll">
-      <Layout style={styles.LAYOUT}>
-        <KitSelectSource title={translate('addPass.searchGallery')} icon={ <QRSearchGalleryIcon  {...iconProps} />}/>
-        <KitSelectSource title={translate('addPass.scanQr')} icon={<QRScanIcon  {...iconProps} /> }/>
-      </Layout>
-      {/* <Button onPress={pickImage} >Pick an image from camera roll</Button>
-      {image != null && <Image source={{ uri: image.uri }} style={styles.IMAGE} />} */}
-    </Screen>
-  </View>)
+
+  const addPassFromSource = async (data: { fromUri?: string, fromString?: string }) => {
+    if (!data || data == null || data === undefined)
+      return
+    setShowLoading(true)
+    let pass = null
+    try {
+      if(data.fromUri)
+        pass = await decodeFromImage(data.fromUri)
+      else
+        pass = await decodeFromString(data.fromString)
+      await delay(1000)
+    } catch (error) {
+      // TODO: DISPLAY ERROR DIALOG
+      console.error(error)
+    }
+    console.log(JSON.stringify(pass, null, 2))
+    if (pass) {
+      pass = await addPass(pass)
+    }
+    console.log(pass)
+    setShowLoading(false)
+    console.log("NAVIGATE TO SHOW PASS IF SUCCESSFULL")
+  }
+
+  const onSearchGalleryPressed = async () => {
+    console.log("Opening Gallery")
+    launchImageLibrary({ mediaType: 'photo', selectionLimit: 1,}, async (resp) => {
+      if (resp.assets) {
+        await addPassFromSource({fromUri: resp.assets[0].uri})
+      }
+    })
+  }
+
+  const onQRCodeRead = async (e: BarCodeReadEvent) => {
+    setShowScanner(false)
+    await addPassFromSource({ fromString: e.data })
+  }
+
+  return (
+    <View style={styles.ROOT}>
+      <KitModalLoading show={showLoading} />
+      <QrScanner
+        show={showScanner}
+        onCancel={() => setShowScanner(false)}
+        onRead={onQRCodeRead}
+      />
+      <KitHeader
+        title={translate('addPass.addTitle')}
+        accessoryLeft={<RenderBackAction nav={navigation} />}
+        style={styles.NAV}
+        alignment='center' />
+      <Screen style={styles.SCREEN} preset="scroll">
+        <Layout style={styles.LAYOUT}>
+          <KitSelectSource
+            title={translate('addPass.searchGallery')}
+            icon={<QRSearchGalleryIcon  {...iconProps} />}
+            onPress={onSearchGalleryPressed}
+          />
+          <KitSelectSource
+            title={translate('addPass.scanQr')}
+            icon={<QRScanIcon  {...iconProps} />}
+            onPress={() => setShowScanner(true)}
+          />
+        </Layout>
+      </Screen>
+    </View>
+  )
 })
 
 
