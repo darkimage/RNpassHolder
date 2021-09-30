@@ -98,7 +98,7 @@ KitHomeBottomNav.Screen = KitHomeBottomNavScreen;
 
 const stylesScreen = StyleService.create({
   BOTTOMNAV: {
-    marginTop: 8,
+    // marginTop: 8,
   },
   LAYOUT: {
     zIndex: -1,

@@ -18,7 +18,7 @@ export const KitTitle = observer(function KitTitle(props: KitTitleProps) {
 
   return (
     <Layout style={style.LAYOUT}>
-      <Text style={style.TEXTLEFT} category='h3'>free</Text>
+      <Text style={style.TEXTLEFT} category='h3'>safe</Text>
       <Text style={style.TEXTRIGHT} category='h3'>Pass</Text>
     </Layout>
   )
