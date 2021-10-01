@@ -1,7 +1,7 @@
 import * as React from "react"
-import { StyleProp, View, ViewStyle } from "react-native"
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Card, Modal, StyleService, useStyleSheet, Text, TextProps, Layout, Button } from "@ui-kitten/components"
+import { Card, Modal, StyleService, useStyleSheet, Text, TextProps, Layout, Button, styled } from "@ui-kitten/components"
 import { translate } from "../../i18n"
 
 export interface KitDialogProps {
@@ -12,11 +12,11 @@ export interface KitDialogProps {
 }
 
 export interface KitDialogOptions {
-  title: string,
+  title?: string,
   titleProps?: TextProps
   description?: string,
   descriptionProps?: TextProps,
-  type?: "error" | "info" | "basic",
+  status?: "danger" | "info" | "basic",
   cancelText?: string,
   okText?: string
   onCancel?: () => void,
@@ -32,10 +32,27 @@ export interface KitDialogRef {
  * Describe your component here
  */
 export const KitDialog = observer(function KitDialog(props: KitDialogProps, ref: React.ForwardedRef<any>) {
-  const { style } = props
   const styles = useStyleSheet(styleComp)
+  const stylesDanger = useStyleSheet(styleCompDanger)
+  const stylesInfo = useStyleSheet(styleCompInfo)
+  const stylesBasic = useStyleSheet(styleCompBasic)
+
+  const {style} = props
   const [options, setOptions] = React.useState({} as KitDialogOptions)
   const [show, setShow] = React.useState(false)
+
+  const getStyleForStatus = (status: string): StyleSheet.NamedStyles<{
+    TITLE: unknown;
+  }> => {
+    switch (status) {
+      case "danger":
+        return stylesDanger
+      case "info":
+        return stylesInfo
+      default:
+        return stylesBasic
+    }
+  }
 
   React.useImperativeHandle(ref, () => ({
     show: (opts: KitDialogOptions) => {
@@ -49,16 +66,16 @@ export const KitDialog = observer(function KitDialog(props: KitDialogProps, ref:
     }
   }))
 
-  const renderHeader = (opts: KitDialogOptions) => (
+  const renderHeader = (opts: KitDialogOptions) => (opts.title && 
     <View>
       <Text
         category="h3"
         {...opts.titleProps}
-        style={[styles.TITLE, opts.titleProps?.style]}
+        style={[styles.TITLE, getStyleForStatus(opts.status).TITLE, opts.titleProps?.style]}
       >
         {opts.title}
       </Text>
-    </View>
+    </View >
   )
 
   const renderFooter = (opts: KitDialogOptions) => (
@@ -91,11 +108,11 @@ export const KitDialog = observer(function KitDialog(props: KitDialogProps, ref:
       onBackdropPress={options.onBackdropPress} // for testing
     >
       <Card
-        status="danger"
         appearance="filled"
+        status={options.status}
         header={renderHeader(options)}
         footer={renderFooter(options)}
-        style={styles.ROOT}
+        style={[styles.ROOT, style]}
       >
         <Text>{options.description}</Text>
       </Card>
@@ -112,8 +129,6 @@ const styleComp = StyleService.create({
   TITLE: {
     paddingHorizontal: 24,
     paddingVertical: 16,
-    backgroundColor: 'color-danger-transparent-200',
-    color: 'color-danger-500'
   },
   BACKDROP: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -122,8 +137,6 @@ const styleComp = StyleService.create({
     flex: 1,
     flexDirection: 'row',
     minHeight: 64,
-    // paddingHorizontal: 0,
-    // paddingVertical: 0,
   },
   BUTTON: {
     flex: 1,
@@ -131,3 +144,24 @@ const styleComp = StyleService.create({
     borderWidth: 0
   }
 })
+
+const styleCompDanger = StyleService.create({
+  TITLE: {
+    backgroundColor: 'color-danger-transparent-200',
+    color: 'color-danger-500'
+  }
+})
+
+const styleCompInfo = StyleService.create({
+  TITLE: {
+    backgroundColor: 'color-info-transparent-200',
+    color: 'color-info-500'
+  }
+})
+
+const styleCompBasic = StyleService.create({
+  TITLE: {}
+})
+
+
+

@@ -37,6 +37,7 @@ export const QrScanDevScreen = observer(function QrScanDevScreen() {
             title: "Prova",
             description: "Prova descrizione",
             okText: "Salva",
+            status: 'info',
             onCancel: () => null,
             onBackdropPress: () => dialog.current.dismiss(),
           })
