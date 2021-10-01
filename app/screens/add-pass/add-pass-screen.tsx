@@ -14,7 +14,7 @@ import QRSearchGalleryIcon from '../../../assets/svg/qr-search-icon.svg'
 import QRScanIcon from '../../../assets/svg/qr-scan-icon.svg'
 import { SvgProps } from "react-native-svg"
 import { delay } from "../../utils/delay"
-import { addPass } from "../../services/database"
+import { addPassfromSource } from "../../services/database"
 import { BarCodeReadEvent } from "react-native-camera"
 
 const BackIcon = (props) => (
@@ -43,55 +43,22 @@ export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> 
     fillOpacity: 0.8
   }
 
-  const addPassFromSource = async (data: { fromUri?: string, fromString?: string }) => {
-    if (!data || data == null || data === undefined)
-      return
-    setShowLoading(true)
-    let pass = null
-    try {
-      if(data.fromUri)
-        pass = await decodeFromImage(data.fromUri)
-      else
-        pass = await decodeFromString(data.fromString)
-      await delay(1000)
-    } catch (error) {
-      // TODO: DISPLAY ERROR DIALOG
-      console.error(error)
-      dialog.current.show({
-        title: translate('common.error'),
-        description: translate('addPass.genericError'),
-        status: 'danger',
-        onOk: () => dialog.current.dismiss()
-      })
-    }
-    console.log(JSON.stringify(pass, null, 2))
-    if (pass) {
-      pass = await addPass(pass)
-    } else {
-      dialog.current.show({
-        title: translate('common.error'),
-        description: translate('addPass.emptyScan'),
-        status: 'danger',
-        onOk: () => dialog.current.dismiss()
-      })
-    }
-    console.log(pass)
-    setShowLoading(false)
-    console.log("NAVIGATE TO SHOW PASS IF SUCCESSFULL")
-  }
-
   const onSearchGalleryPressed = async () => {
     console.log("Opening Gallery")
     launchImageLibrary({ mediaType: 'photo', selectionLimit: 1,}, async (resp) => {
       if (resp.assets) {
-        await addPassFromSource({fromUri: resp.assets[0].uri})
+        setShowLoading(true)
+        await addPassfromSource({ fromUri: resp.assets[0].uri }, dialog)
+        setShowLoading(false)
       }
     })
   }
 
   const onQRCodeRead = async (e: BarCodeReadEvent) => {
     setShowScanner(false)
-    await addPassFromSource({ fromString: e.data })
+    setShowLoading(true)
+    await addPassfromSource({ fromString: e.data }, dialog)
+    setShowLoading(false)
   }
 
   return (

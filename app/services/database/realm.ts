@@ -1,7 +1,10 @@
-import { DecodedQr } from './../qr/greenpass';
+import { KitDialogRef } from './../../components/kit-dialog/kit-dialog';
+import { DecodedQr, decodeFromImage, decodeFromString } from './../qr/greenpass';
 import Realm, { ObjectSchema } from 'realm';
-import { useEffect, useState } from "react"
+import { ForwardedRef, useEffect, useState } from "react"
 import dayjs from 'dayjs'
+import { delay } from '../../utils/delay';
+import { translate } from '../../i18n';
 
 export const PassSchema: ObjectSchema = {
   name: "Pass",
@@ -42,6 +45,16 @@ export const PassSchema: ObjectSchema = {
       default: null
     }
   }
+}
+
+export interface QRPass {
+  added: string,
+  type: string,
+  qr: string,
+  name?: string,
+  surname?: string,
+  lastVaccination?: string,
+  expires?: string
 }
 
 export async function getRealmDatabase() {
@@ -105,11 +118,11 @@ export function useRealmResultsHook(query, args = []) {
 }
 
 
-export async function addPass(passData: DecodedQr) {
+export async function addPass(passData: DecodedQr): Promise<QRPass | null> {
   try {
     console.log(`ADDING PASS ${passData.qr} TO DATABASE`)
     const realm = await getRealmDatabase();
-    let pass = null
+    let pass: QRPass = null
     realm.write(() => {
       pass = realm.create("Pass", {
         added: dayjs().format(),
@@ -126,4 +139,37 @@ export async function addPass(passData: DecodedQr) {
     console.error(error)
     return null
   }
+}
+
+export async function addPassfromSource(data: { fromUri?: string, fromString?: string }, dialog: React.MutableRefObject<KitDialogRef>): Promise< QRPass | null> {
+  if (!data || data == null || data === undefined)
+    return null
+  let pass = null
+  try {
+    if(data.fromUri)
+      pass = await decodeFromImage(data.fromUri)
+    else
+      pass = await decodeFromString(data.fromString)
+    await delay(1000)
+  } catch (error) {
+    console.error(error)
+    dialog.current.show({
+      title: translate('common.error'),
+      description: translate('addPass.genericError'),
+      status: 'danger',
+      onOk: () => dialog.current.dismiss()
+    })
+  }
+  console.log(JSON.stringify(pass, null, 2))
+  if (pass) {
+    pass = await addPass(pass)
+  } else {
+    dialog.current.show({
+      title: translate('common.error'),
+      description: translate('addPass.emptyScan'),
+      status: 'danger',
+      onOk: () => dialog.current.dismiss()
+    })
+  }
+  return pass
 }
