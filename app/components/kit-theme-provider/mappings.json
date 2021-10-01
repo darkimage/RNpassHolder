@@ -1,0 +1,23 @@
+{
+  "components": {
+    "Card": {
+      "meta": {
+        "scope": "all",
+        "parameters": {},
+        "appearances": {},
+        "variantGroups": {},
+        "states": {}  
+      },
+      "appearances": {
+        "outline": {
+          "mapping": {
+            "headerPaddingHorizontal": 0,
+            "headerPaddingVertical": 0,
+            "footerPaddingHorizontal": 0,
+            "footerPaddingVertical": 0
+          }
+        }
+      }
+    }
+  }
+}

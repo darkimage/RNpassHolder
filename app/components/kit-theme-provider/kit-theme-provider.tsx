@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
 import * as eva from '@eva-design/eva'
 import { ApplicationProvider, Layout } from "@ui-kitten/components"
+import mapping from './mappings.json'
 
 export interface KitThemeProviderProps {
   /**
@@ -13,6 +14,8 @@ export interface KitThemeProviderProps {
   children: React.ReactNode
 }
 
+
+
 /**
  * Describe your component here
  */
@@ -20,6 +23,11 @@ export const KitThemeProvider = observer(function KitThemeProvider(props: KitThe
   const { themeStore } = useStores()
 
   return (
-    <ApplicationProvider {...eva} theme={themeStore.current === "dark" ? eva.dark : eva.light} {...props}/>
+    <ApplicationProvider
+      {...eva}
+      theme={themeStore.current === "dark" ? eva.dark : eva.light}
+      customMapping={mapping}
+      {...props}
+    />
   )
 })
