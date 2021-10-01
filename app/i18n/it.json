@@ -2,7 +2,8 @@
   "common": {
     "ok": "OK!",
     "cancel": "Cancella",
-    "back": "Indietro"
+    "back": "Indietro",
+    "error": "Errore"
   },
   "errors": {
     "invalidEmail": "Invalid email address."
@@ -26,7 +27,9 @@
   "addPass":{
     "addTitle": "Aggiungi un Pass",
     "searchGallery": "Aggiungi dalle Immagini",
-    "scanQr": "Aggiungi da scansione QR" 
+    "scanQr": "Aggiungi da scansione QR" ,
+    "genericError": "Qualcosa e andato storto. \\n Assicurati che l'immagine selezionata non sia troppo grossa o che il codce qr scansionatp sia valido",
+    "emptyScan": "Non è un codice QR valido"
   },
   "qrCodeScanner":{
     "title": "Scansiona codice QR" 

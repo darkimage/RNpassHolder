@@ -122,9 +122,11 @@ export const KitDialog = observer(function KitDialog(props: KitDialogProps, ref:
 
 const styleComp = StyleService.create({
   ROOT: {
-    minWidth: '70%',
+    minWidth: '90%',
+    maxWidth: '90%',
     flex: 1,
     borderRadius: 10,
+    alignSelf: 'center'
   },
   TITLE: {
     paddingHorizontal: 24,
@@ -132,9 +134,12 @@ const styleComp = StyleService.create({
   },
   BACKDROP: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    // flex: 1,
+    // justifyContent: 'center',
+    // alignItems: 'center'
   },
   FOOTER: {
-    flex: 1,
+    // flex: 1,
     flexDirection: 'row',
     minHeight: 64,
   },

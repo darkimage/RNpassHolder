@@ -2,7 +2,8 @@
   "common": {
     "ok": "OK!",
     "cancel": "Cancel",
-    "back": "Back"
+    "back": "Back",
+    "error": "Error"
   },
   "errors": {
     "invalidEmail": "Invalid email address."
@@ -26,7 +27,9 @@
   "addPass":{
     "addTitle": "Add a Pass",
     "searchGallery": "Add from Image Gallery",
-    "scanQr": "Add from QR Scan" 
+    "scanQr": "Add from QR Scan",
+    "genericError": "Something went wrong. \\n Be sure that the image selected is not too big or that the scanned QR Code is valid",
+    "emptyScan": "Not a valid QR code"
   },
   "qrCodeScanner":{
     "title": "Scan a QR Code" 

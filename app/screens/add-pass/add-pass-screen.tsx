@@ -1,7 +1,7 @@
-import React, { FC, useEffect, useState } from "react"
+import React, { FC, useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { Image, Platform, View, ViewStyle } from "react-native"
-import { KitHeader, KitModalLoading, KitSelectSource, QrScanner, Screen, Text } from "../../components"
+import { KitDialog, KitDialogRef, KitHeader, KitModalLoading, KitSelectSource, QrScanner, Screen, Text } from "../../components"
 import { Button, Icon, Layout, StyleService, TopNavigation, TopNavigationAction, useStyleSheet, useTheme } from "@ui-kitten/components"
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { decodeFromImage, decodeFromString } from "../../services/qr"
@@ -31,6 +31,7 @@ export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> 
   const [showLoading, setShowLoading] = useState(false)
   const [showScanner, setShowScanner] = useState(false)
   const theme = useTheme()
+  const dialog = useRef<KitDialogRef>()
 
   useEffect(() => {
     statusBarStore.setBgColor(((styles.ROOT) as any).backgroundColor)
@@ -56,10 +57,23 @@ export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> 
     } catch (error) {
       // TODO: DISPLAY ERROR DIALOG
       console.error(error)
+      dialog.current.show({
+        title: translate('common.error'),
+        description: translate('addPass.genericError'),
+        status: 'danger',
+        onOk: () => dialog.current.dismiss()
+      })
     }
     console.log(JSON.stringify(pass, null, 2))
     if (pass) {
       pass = await addPass(pass)
+    } else {
+      dialog.current.show({
+        title: translate('common.error'),
+        description: translate('addPass.emptyScan'),
+        status: 'danger',
+        onOk: () => dialog.current.dismiss()
+      })
     }
     console.log(pass)
     setShowLoading(false)
@@ -82,6 +96,7 @@ export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> 
 
   return (
     <View style={styles.ROOT}>
+      <KitDialog ref={dialog} />
       <KitModalLoading show={showLoading} />
       <QrScanner
         show={showScanner}
