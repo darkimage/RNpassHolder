@@ -64,7 +64,7 @@ const styleComp = StyleService.create({
     flex: 1,
     margin: 2,
     borderRadius: 20,
-    elevation: 12
+    // elevation: 12
   },
   CENTER: {
     flex: 1,
