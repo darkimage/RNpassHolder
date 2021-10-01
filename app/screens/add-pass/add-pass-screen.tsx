@@ -1,19 +1,16 @@
 import React, { FC, useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { Image, Platform, View, ViewStyle } from "react-native"
-import { KitDialog, KitDialogRef, KitHeader, KitModalLoading, KitSelectSource, QrScanner, Screen, Text } from "../../components"
-import { Button, Icon, Layout, StyleService, TopNavigation, TopNavigationAction, useStyleSheet, useTheme } from "@ui-kitten/components"
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { decodeFromImage, decodeFromString } from "../../services/qr"
+import { View } from "react-native"
+import { KitDialog, KitDialogRef, KitHeader, KitModalLoading, KitSelectSource, QrScanner, Screen } from "../../components"
+import { Icon, Layout, StyleService, TopNavigationAction, useStyleSheet, useTheme } from "@ui-kitten/components"
+import { launchImageLibrary } from 'react-native-image-picker';
 import { useStores } from "../../models"
 import { translate } from "../../i18n"
-import { NavigationProp, useNavigation } from "@react-navigation/core"
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
 import { NavigatorParamList } from "../../navigators"
 import QRSearchGalleryIcon from '../../../assets/svg/qr-search-icon.svg'
 import QRScanIcon from '../../../assets/svg/qr-scan-icon.svg'
 import { SvgProps } from "react-native-svg"
-import { delay } from "../../utils/delay"
 import { addPassfromSource } from "../../services/database"
 import { BarCodeReadEvent } from "react-native-camera"
 
