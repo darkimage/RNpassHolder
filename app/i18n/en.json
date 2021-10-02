@@ -31,7 +31,8 @@
     "genericError": "Something went wrong. \\n Be sure that the image selected is not too big or that the scanned QR Code is valid",
     "emptyScan": "Not a valid QR code",
     "addedMessage": "QR Pass successfully added",
-    "alreadyExistMessage": "The Pass already exist"
+    "alreadyExistMessage": "The Pass already exist",
+    "removedMessage": "The pass was removed successfully"
   },
   "qrCodeScanner":{
     "title": "Scan a QR Code" 

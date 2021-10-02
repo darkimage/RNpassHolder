@@ -2,7 +2,7 @@ import * as React from "react"
 import { StyleProp, View, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
 import { Text } from "../"
-import { Icon, MenuItem, OverflowMenu, TopNavigationAction } from "@ui-kitten/components"
+import { Icon, IndexPath, MenuItem, OverflowMenu, TopNavigationAction } from "@ui-kitten/components"
 import { useState } from "react"
 import { translate } from "../../i18n"
 
@@ -17,7 +17,7 @@ export interface ViewPassActionMenuProps {
   style?: StyleProp<ViewStyle>,
   onSave?: () => void,
   onDelete?: () => void,
-  onSetExpiration: () => void
+  onSetExpiration?: () => void
 }
 
 /**
@@ -27,9 +27,11 @@ export const ViewPassActionMenu = observer(function ViewPassActionMenu(props: Vi
 
   const [visible, setVisible] = useState(false);
 
-  const onItemSelect = (index) => {
+  const onItemSelect = (index: IndexPath) => {
+    console.log("ViewPassActionMenu: Index:", index)
+    console.log("ViewPassActionMenu: Props:", props)
     setVisible(false);
-    switch (index) {
+    switch (index.row) {
       case 0:
         props?.onSave?.()
         break;

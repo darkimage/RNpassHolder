@@ -31,7 +31,8 @@
     "genericError": "Qualcosa e andato storto. \\n Assicurati che l'immagine selezionata non sia troppo grossa o che il codce qr scansionatp sia valido",
     "emptyScan": "Non è un codice QR valido",
     "addedMessage": "Pass aggiunto con successo",
-    "alreadyExistMessage": "Il pass gia' esiste"
+    "alreadyExistMessage": "Il pass gia' esiste",
+    "removedMessage": "Il pass e' stato rimosso"
   },
   "qrCodeScanner":{
     "title": "Scansiona codice QR" 

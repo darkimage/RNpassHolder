@@ -155,6 +155,22 @@ export async function addPass(passData: DecodedQr): Promise<QRPass | null> {
   }
 }
 
+export async function removePass(pass: QRPass): Promise<boolean> {
+  if (!pass || pass == null || pass === undefined)
+    return null
+  try {
+    const realm = await getRealmDatabase();
+    realm.write(() => {
+      realm.delete(pass)
+    })
+    ToastAndroid.show(translate('addPass.removedMessage'), ToastAndroid.SHORT)
+    return true
+  } catch (error) {
+    console.error(error)
+    return false
+  }
+}
+
 export async function addPassfromSource(data: { fromUri?: string, fromString?: string }, dialog: React.MutableRefObject<KitDialogRef>): Promise< QRPass | null> {
   if (!data || data == null || data === undefined)
     return null

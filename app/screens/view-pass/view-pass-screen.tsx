@@ -5,7 +5,7 @@ import { BackHandler, Dimensions, View } from "react-native"
 import { KitBackAction, KitHeader, Screen, ViewPassActionMenu, ViewPassPlaceholder, ViewPassQrDetails } from "../../components"
 import { StyleService, useStyleSheet, Layout } from "@ui-kitten/components"
 import { useStores } from "../../models"
-import { getRealmDatabase, QRPass } from "../../services/database"
+import { getRealmDatabase, QRPass, removePass } from "../../services/database"
 import { ObjectId } from 'bson'
 import { useFocusEffect } from "@react-navigation/core"
 import { NavigatorParamList } from "../../navigators"
@@ -51,6 +51,13 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
     }, [])
   )
 
+  const onRemove = (passObj: QRPass) => {
+    console.log("ViewPassScreen: onRemove: Called")
+    removePass(passObj)
+    currentPassStore.setPass('')
+    navigation.navigate('home')
+  }
+
   const qrSize = Dimensions.get('screen').width - 16
   // Pull in navigation via hook
   // const navigation = useNavigation()
@@ -59,7 +66,10 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
       <KitHeader
         title={translate("viewPass.title")}
         accessoryLeft={<KitBackAction onPress={() => navigation.navigate('home')} />}
-        accessoryRight={<ViewPassActionMenu />}
+        accessoryRight={
+          <ViewPassActionMenu
+          onDelete={() => onRemove(pass)}
+        />}
         setStatusBar={false}
         style={[styles.NAV, {backgroundColor: navTheme.colors.background}]}
         alignment="center"
