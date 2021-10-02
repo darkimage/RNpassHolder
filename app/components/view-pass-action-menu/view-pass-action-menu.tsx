@@ -14,7 +14,10 @@ export interface ViewPassActionMenuProps {
   /**
    * An optional style override useful for padding & margin.
    */
-  style?: StyleProp<ViewStyle>
+  style?: StyleProp<ViewStyle>,
+  onSave?: () => void,
+  onDelete?: () => void,
+  onSetExpiration: () => void
 }
 
 /**
@@ -26,6 +29,17 @@ export const ViewPassActionMenu = observer(function ViewPassActionMenu(props: Vi
 
   const onItemSelect = (index) => {
     setVisible(false);
+    switch (index) {
+      case 0:
+        props?.onSave?.()
+        break;
+      case 1:
+        props?.onSetExpiration?.()
+        break;
+      case 2:
+        props?.onDelete?.()
+        break;
+    }
   };
 
   const renderNavAction = () => (
@@ -44,6 +58,7 @@ export const ViewPassActionMenu = observer(function ViewPassActionMenu(props: Vi
       onBackdropPress={() => setVisible(false)}>
       <MenuItem title={translate('viewPass.saveToGallery')} />
       <MenuItem title={translate('viewPass.setExpire')} />
+      <MenuItem title={translate('viewPass.delete')} />
     </OverflowMenu>
   )
 })

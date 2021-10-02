@@ -29,7 +29,9 @@
     "searchGallery": "Add from Image Gallery",
     "scanQr": "Add from QR Scan",
     "genericError": "Something went wrong. \\n Be sure that the image selected is not too big or that the scanned QR Code is valid",
-    "emptyScan": "Not a valid QR code"
+    "emptyScan": "Not a valid QR code",
+    "addedMessage": "QR Pass successfully added",
+    "alreadyExistMessage": "The Pass already exist"
   },
   "qrCodeScanner":{
     "title": "Scan a QR Code" 
@@ -43,7 +45,8 @@
     "addedlabel": "Date added",
     "expiresLabel": "Expires:",
     "saveToGallery": "Save to gallery",
-    "setExpire": "Set expire date"
+    "setExpire": "Set expire date",
+    "delete": "Delete"
   },
   "pass":{
     "vaccination": "Vaccination",

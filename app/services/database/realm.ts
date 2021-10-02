@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import { delay } from '../../utils/delay';
 import { translate } from '../../i18n';
 import {ObjectId} from 'bson'
+import { ToastAndroid } from 'react-native';
 
 export const PassSchema: ObjectSchema = {
   name: "Pass",
@@ -129,16 +130,23 @@ export async function addPass(passData: DecodedQr): Promise<QRPass | null> {
     const realm = await getRealmDatabase();
     let pass: QRPass = null
     realm.write(() => {
-      pass = realm.create("Pass", {
-        _id: new ObjectId(),
-        added: dayjs().format(),
-        qr: passData.qr,
-        name: passData.data.name,
-        surname: passData.data.surname,
-        lastVaccination: passData.data.lastVaccination,
-        type: passData.data.type,
-        expires: ''
-      })
+      const exist = realm.objects("Pass").filtered('qr == $0', passData.qr)
+      if (exist.length === 0) {
+        pass = realm.create("Pass", {
+          _id: new ObjectId(),
+          added: dayjs().format(),
+          qr: passData.qr,
+          name: passData.data.name,
+          surname: passData.data.surname,
+          lastVaccination: passData.data.lastVaccination,
+          type: passData.data.type,
+          expires: ''
+        })
+        ToastAndroid.show(translate('addPass.addedMessage'), ToastAndroid.SHORT)
+      } else {
+        pass = exist[0] as any
+        ToastAndroid.show(translate('addPass.alreadyExistMessage'), ToastAndroid.SHORT)
+      }
     })
     return pass
   } catch (error) {

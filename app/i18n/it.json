@@ -29,7 +29,9 @@
     "searchGallery": "Aggiungi dalle Immagini",
     "scanQr": "Aggiungi da scansione QR" ,
     "genericError": "Qualcosa e andato storto. \\n Assicurati che l'immagine selezionata non sia troppo grossa o che il codce qr scansionatp sia valido",
-    "emptyScan": "Non è un codice QR valido"
+    "emptyScan": "Non è un codice QR valido",
+    "addedMessage": "Pass aggiunto con successo",
+    "alreadyExistMessage": "Il pass gia' esiste"
   },
   "qrCodeScanner":{
     "title": "Scansiona codice QR" 
@@ -43,7 +45,8 @@
     "addedLabel": "Aggiunto in data:",
     "expiresLabel": "Data scadenza:",
     "saveToGallery": "Salva nella galleria",
-    "setExpire": "Imposta scadenza"
+    "setExpire": "Imposta scadenza",
+    "delete": "Elimina"
   },
   "pass":{
     "vaccination": "Vaccinazione",
