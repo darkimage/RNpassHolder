@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { BackHandler, View } from "react-native"
-import { KitDialog, KitDialogRef, KitHeader, KitModalLoading, KitSelectSource, QrScanner, Screen } from "../../components"
+import { KitBackAction, KitDialog, KitDialogRef, KitHeader, KitModalLoading, KitSelectSource, QrScanner, Screen } from "../../components"
 import { Icon, Layout, StyleService, TopNavigationAction, useStyleSheet, useTheme } from "@ui-kitten/components"
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useStores } from "../../models"
@@ -14,14 +14,6 @@ import { SvgProps } from "react-native-svg"
 import { addPassfromSource } from "../../services/database"
 import { BarCodeReadEvent } from "react-native-camera"
 import { useFocusEffect } from "@react-navigation/core"
-
-const BackIcon = (props) => (
-  <Icon {...props} name='arrow-back'/>
-);
-
-const RenderBackAction = (props: { nav: StackNavigationProp<NavigatorParamList,"addPass"> } ) => (
-  <TopNavigationAction onPress={() => props.nav.goBack()} icon={BackIcon}/>
-);
 
 export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> = observer(function AddPassScreen({navigation}) {
   const {statusBarStore, currentPassStore} = useStores()
@@ -78,7 +70,8 @@ export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> 
       />
       <KitHeader
         title={translate('addPass.addTitle')}
-        accessoryLeft={<RenderBackAction nav={navigation} />}
+        accessoryLeft={<KitBackAction onPress={()=> navigation.goBack()} />}
+        setStatusBar={false}
         style={styles.NAV}
         alignment='center' />
       <Screen style={styles.SCREEN} preset="scroll">

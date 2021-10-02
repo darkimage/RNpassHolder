@@ -34,6 +34,21 @@
   "qrCodeScanner":{
     "title": "Scan a QR Code" 
   },
+  "viewPass":{
+    "title": "View pass",
+    "details": "Details",
+    "nameLabel": "Name:",
+    "typeLabel": "Pass type:",
+    "lastLabel": "Last vaccination / Release date:",
+    "addedlabel": "Date added",
+    "expiresLabel": "Expires:",
+    "saveToGallery": "Save to gallery",
+    "setExpire": "Set expire date"
+  },
+  "pass":{
+    "vaccination": "Vaccination",
+    "swab": "Swab Test"
+  },
   "demoScreen": {
     "howTo": "HOW TO",
     "title": "What’s In This Stack?",

@@ -34,6 +34,21 @@
   "qrCodeScanner":{
     "title": "Scansiona codice QR" 
   },
+  "viewPass":{
+    "title": "Visualizza Pass",
+    "details": "Dettagli",
+    "nameLabel": "Nome:",
+    "typeLabel": "Genere:",
+    "lastLabel": "Ultima vaccinazione / Data rilascio:",
+    "addedLabel": "Aggiunto in data:",
+    "expiresLabel": "Data scadenza:",
+    "saveToGallery": "Salva nella galleria",
+    "setExpire": "Imposta scadenza"
+  },
+  "pass":{
+    "vaccination": "Vaccinazione",
+    "swab": "Test Molecolare"
+  },
   "demoScreen": {
     "howTo": "HOW TO",
     "title": "What’s In This Stack?",

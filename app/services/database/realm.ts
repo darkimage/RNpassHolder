@@ -54,7 +54,7 @@ export const PassSchema: ObjectSchema = {
 export interface QRPass {
   _id?: ObjectId,
   added: string,
-  type: string,
+  type: "vaccination" | 'swab',
   qr: string,
   name?: string,
   surname?: string,
@@ -63,11 +63,11 @@ export interface QRPass {
 }
 
 export async function getRealmDatabase() {
-  if (__DEV__) {
-    Realm.deleteFile({
-      path: "db.realm"
-    })
-  }
+  // if (__DEV__) {
+  //   Realm.deleteFile({
+  //     path: "db.realm"
+  //   })
+  // }
   return await Realm.open({
     path: "db.realm",
     schema: [PassSchema],
