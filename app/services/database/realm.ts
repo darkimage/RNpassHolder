@@ -5,11 +5,16 @@ import { ForwardedRef, useEffect, useState } from "react"
 import dayjs from 'dayjs'
 import { delay } from '../../utils/delay';
 import { translate } from '../../i18n';
+import {ObjectId} from 'bson'
 
 export const PassSchema: ObjectSchema = {
   name: "Pass",
-  primaryKey: 'added',
+  primaryKey: '_id',
   properties: {
+    _id: {
+      type: 'objectId',
+      indexed: true 
+    },
     added: {
       type: 'string',
       optional: false,
@@ -18,7 +23,6 @@ export const PassSchema: ObjectSchema = {
     type: {
       type: 'string',
       optional: false,
-      indexed: true
     },
     qr: {
       type: 'string',
@@ -48,6 +52,7 @@ export const PassSchema: ObjectSchema = {
 }
 
 export interface QRPass {
+  _id?: ObjectId,
   added: string,
   type: string,
   qr: string,
@@ -95,17 +100,17 @@ export function useRealmResultsHook(query, args = []) {
 
   useEffect(() => {
     function handleChange(newData) {
-      console.log("New data", newData)
+      console.log("useRealmResultsHook: New data", newData)
       setData([...newData])                   // different object and execute a re-render
     }
 
     const dataQuery = args ? query(...args) : query()
     if (dataQuery !== null) {
-      console.log("Adding listener for query")
+      console.log("useRealmResultsHook: Adding listener for query")
       dataQuery?.addListener(handleChange)
 
       return () => {
-        console.log("Removing handle listening for query")
+        console.log("useRealmResultsHook: Removing handle listening for query")
         dataQuery.removeAllListeners()
       }
     } else {
@@ -120,11 +125,12 @@ export function useRealmResultsHook(query, args = []) {
 
 export async function addPass(passData: DecodedQr): Promise<QRPass | null> {
   try {
-    console.log(`ADDING PASS ${passData.qr} TO DATABASE`)
+    console.log(`addPass: ADDING PASS ${passData.qr} TO DATABASE`)
     const realm = await getRealmDatabase();
     let pass: QRPass = null
     realm.write(() => {
       pass = realm.create("Pass", {
+        _id: new ObjectId(),
         added: dayjs().format(),
         qr: passData.qr,
         name: passData.data.name,
@@ -160,7 +166,6 @@ export async function addPassfromSource(data: { fromUri?: string, fromString?: s
       onOk: () => dialog.current.dismiss()
     })
   }
-  console.log(JSON.stringify(pass, null, 2))
   if (pass) {
     pass = await addPass(pass)
   } else {
@@ -171,5 +176,6 @@ export async function addPassfromSource(data: { fromUri?: string, fromString?: s
       onOk: () => dialog.current.dismiss()
     })
   }
+  console.log(`addPass: ${JSON.stringify(pass, null, 2)}`)
   return pass
 }

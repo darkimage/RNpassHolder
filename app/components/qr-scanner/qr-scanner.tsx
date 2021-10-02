@@ -1,10 +1,12 @@
 import * as React from "react"
-import { StyleProp, View, ViewStyle } from "react-native"
+import { BackHandler, StyleProp, View, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
 import QRCodeScanner, { RNQRCodeScannerProps } from "react-native-qrcode-scanner"
 import { Modal, StyleService, Text, useStyleSheet, Button, Card, Layout, Divider } from "@ui-kitten/components"
 import { translate } from "../../i18n"
 import SVGScannerIcon from '../../../assets/svg/qr-scanner-icon.svg'
+import { useFocusEffect } from "@react-navigation/native"
+import { useCallback, useEffect, useState } from "react"
 
 export interface QrScannerProps extends RNQRCodeScannerProps {
   /**
@@ -25,15 +27,45 @@ export interface QrScannerProps extends RNQRCodeScannerProps {
  * A Modal QR Scanner interface
  */
 export const QrScanner = observer(function QrScanner(props: QrScannerProps) {
-  const { style, show, onCancel } = props
+  const { style, onCancel } = props
   const styles = useStyleSheet(styleComp)
+  const [show, setShow] = useState(props.show)
+
+  useEffect(() => {
+    setShow(props.show)
+  },[props])
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        if (show) {
+          console.log("QRScanner: back pressed show is true hiding")
+          setShow(false)
+          return true
+        } else {
+          console.log("QRScanner: back pressed show is false not handling")
+          return false
+        }
+      }
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress)
+      console.log("QRScanner: Added backhandler")
+
+      return () => {
+        console.log("QRScanner: Removed Backhandler")
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress)
+      }
+    }, [show, props.show])
+  )
+
 
   return (
     <Modal
       backdropStyle={styles.BACKDROP}
-      visible={show}>
+      visible={show}
+    >
       <Card
-        style={styles.CARD}
+        style={[styles.CARD, style]}
         header={() => <View style={styles.CENTER}>
           <Text category="h4" style={styles.TITLE}>{translate('qrCodeScanner.title')}</Text>
         </View>}

@@ -8,6 +8,7 @@
 // side effect of breaking other tooling like mobile-center and react-native-rename.
 //
 // It's easier just to leave it here.
+import 'react-native-get-random-values'
 global.Buffer = require('buffer').Buffer;
 import App from "./app/app.tsx"
 import { AppRegistry } from "react-native"

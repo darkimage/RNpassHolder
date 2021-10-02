@@ -10,7 +10,7 @@ export const KitStatusbar = observer(function KitStatusbar() {
   const { themeStore, statusBarStore } = useStores()
 
   React.useEffect(() => {
-    console.log("theme store:", themeStore.current)
+    console.log("KitStatusbar: theme store:", themeStore.current)
     StatusBar.setBarStyle(themeStore.current === 'light' ? "dark-content" : "light-content", true)
     StatusBar.setBackgroundColor(statusBarStore.backgroundColor)
   }, [themeStore.current, statusBarStore.backgroundColor])

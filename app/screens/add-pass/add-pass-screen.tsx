@@ -1,6 +1,6 @@
-import React, { FC, useEffect, useRef, useState } from "react"
+import React, { FC, useCallback, useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { View } from "react-native"
+import { BackHandler, View } from "react-native"
 import { KitDialog, KitDialogRef, KitHeader, KitModalLoading, KitSelectSource, QrScanner, Screen } from "../../components"
 import { Icon, Layout, StyleService, TopNavigationAction, useStyleSheet, useTheme } from "@ui-kitten/components"
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -13,6 +13,7 @@ import QRScanIcon from '../../../assets/svg/qr-scan-icon.svg'
 import { SvgProps } from "react-native-svg"
 import { addPassfromSource } from "../../services/database"
 import { BarCodeReadEvent } from "react-native-camera"
+import { useFocusEffect } from "@react-navigation/core"
 
 const BackIcon = (props) => (
   <Icon {...props} name='arrow-back'/>
@@ -23,16 +24,16 @@ const RenderBackAction = (props: { nav: StackNavigationProp<NavigatorParamList,"
 );
 
 export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> = observer(function AddPassScreen({navigation}) {
-  const {statusBarStore} = useStores()
+  const {statusBarStore, currentPassStore} = useStores()
   const styles = useStyleSheet(stylesScreen)
   const [showLoading, setShowLoading] = useState(false)
   const [showScanner, setShowScanner] = useState(false)
   const theme = useTheme()
   const dialog = useRef<KitDialogRef>()
 
-  useEffect(() => {
+  useFocusEffect(() => {
     statusBarStore.setBgColor(((styles.ROOT) as any).backgroundColor)
-  }, [])
+  })
 
   const iconProps: SvgProps = {
     style: styles.ICON,
@@ -41,12 +42,16 @@ export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> 
   }
 
   const onSearchGalleryPressed = async () => {
-    console.log("Opening Gallery")
+    console.log("AddPassScreen: Opening Gallery")
     launchImageLibrary({ mediaType: 'photo', selectionLimit: 1,}, async (resp) => {
       if (resp.assets) {
         setShowLoading(true)
-        await addPassfromSource({ fromUri: resp.assets[0].uri }, dialog)
+        const pass = await addPassfromSource({ fromUri: resp.assets[0].uri }, dialog)
         setShowLoading(false)
+        if (pass) {
+          currentPassStore.setPass(pass._id.toHexString())
+          navigation.navigate('viewPass')
+        }
       }
     })
   }
@@ -54,8 +59,12 @@ export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> 
   const onQRCodeRead = async (e: BarCodeReadEvent) => {
     setShowScanner(false)
     setShowLoading(true)
-    await addPassfromSource({ fromString: e.data }, dialog)
+    const pass = await addPassfromSource({ fromString: e.data }, dialog)
     setShowLoading(false)
+    if (pass) {
+      currentPassStore.setPass(pass._id.toHexString())
+      navigation.navigate('viewPass')
+    }
   }
 
   return (

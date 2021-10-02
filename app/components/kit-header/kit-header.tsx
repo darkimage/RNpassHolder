@@ -25,10 +25,10 @@ export const KitHeader = observer(function KitHeader(props: KitHeaderProps) {
   const {statusBarStore} = useStores()
 
   React.useEffect(() => {
-    console.log("RENDERED")
+    console.log("KitHeader: RENDERED")
     if (focused) {
       if (props.setStatusBar) {
-        console.log(((style.LAYOUT) as any).backgroundColor)
+        console.log(`KitHeader: ${((style.LAYOUT) as any).backgroundColor}`)
         statusBarStore.setBgColor(((style.LAYOUT) as any).backgroundColor)
       }
       else

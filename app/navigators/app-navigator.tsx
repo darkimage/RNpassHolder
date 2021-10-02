@@ -8,7 +8,7 @@ import React, { useEffect } from "react"
 import { AppState, useColorScheme, View, ViewStyle } from "react-native"
 import { NavigationContainer, DefaultTheme, DarkTheme, Theme, useTheme as useNavTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { WelcomeScreen, DemoScreen, DemoListScreen, HomeScreen, AddPassScreen, QrScanDevScreen } from "../screens"
+import { WelcomeScreen, DemoScreen, DemoListScreen, HomeScreen, AddPassScreen, QrScanDevScreen, ViewPassScreen } from "../screens"
 import { navigationRef } from "./navigation-utilities"
 import { testKeychain, testREALM } from "../library-tests"
 import { useStores } from "../models"
@@ -33,7 +33,8 @@ export type NavigatorParamList = {
   demo: undefined
   demoList: undefined,
   addPass: undefined,
-  qrTest: undefined
+  qrTest: undefined,
+  viewPass: undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
@@ -59,6 +60,7 @@ const AppStack = () => {
       <Stack.Screen name="addPass" component={AddPassScreen} />
       <Stack.Screen name="demoList" component={DemoListScreen} />
       <Stack.Screen name="qrTest" component={QrScanDevScreen} />
+      <Stack.Screen name="viewPass" component={ViewPassScreen} />
       </Stack.Navigator>
     </View>
   )
@@ -91,7 +93,7 @@ export const AppNavigator = (props: NavigationProps) => {
 
   useEffect(() => {
     if (AppState.currentState === 'background') {
-      console.log("App entering background.... locking")
+      console.log("AppNavigator: App entering background.... locking")
       lockedStore.setLocked(true)
     }
   }, [AppState.currentState])

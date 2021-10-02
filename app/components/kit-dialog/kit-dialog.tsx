@@ -1,8 +1,10 @@
 import * as React from "react"
-import { StyleProp, StyleSheet, View, ViewStyle } from "react-native"
+import { BackHandler, StyleProp, StyleSheet, View, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
 import { Card, Modal, StyleService, useStyleSheet, Text, TextProps, Layout, Button, styled } from "@ui-kitten/components"
 import { translate } from "../../i18n"
+import { useCallback, useImperativeHandle, useState } from "react"
+import { useFocusEffect } from "@react-navigation/core"
 
 export interface KitDialogProps {
   /**
@@ -38,8 +40,8 @@ export const KitDialog = observer(function KitDialog(props: KitDialogProps, ref:
   const stylesBasic = useStyleSheet(styleCompBasic)
 
   const {style} = props
-  const [options, setOptions] = React.useState({} as KitDialogOptions)
-  const [show, setShow] = React.useState(false)
+  const [options, setOptions] = useState({} as KitDialogOptions)
+  const [show, setShow] = useState(false)
 
   const getStyleForStatus = (status: string): StyleSheet.NamedStyles<{
     TITLE: unknown;
@@ -54,14 +56,37 @@ export const KitDialog = observer(function KitDialog(props: KitDialogProps, ref:
     }
   }
 
-  React.useImperativeHandle(ref, () => ({
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        if (show) {
+          console.log("KitDialog: back pressed show is true hiding")
+          setShow(false)
+          return true
+        } else {
+          console.log("KitDialog: back pressed show is false not handling")
+          return false
+        }
+      }
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress)
+      console.log("KitDialog: Added backhandler")
+
+      return () => {
+        console.log("KitDialog: Removed Backhandler")
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress)
+      }
+    }, [props, show])
+  )
+
+  useImperativeHandle(ref, () => ({
     show: (opts: KitDialogOptions) => {
-      console.log("SHOW CALLED")
+      console.log("KitDialog: SHOW CALLED")
       setOptions(opts)
       setShow(true)
     },
     dismiss: () => {
-      console.log("DISMISS CALLED")
+      console.log("KitDialog: DISMISS CALLED")
       setShow(false)
     }
   }))

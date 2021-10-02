@@ -37,27 +37,27 @@ export const decodeFromImage = async (uri: string): Promise<DecodedQr | null>=> 
  * Decodes an Italian Green pass into and object with data from a string
  */
 export const decodeFromString = async (decodedGreenpass: string): Promise<DecodedQr | null> => {
-  console.log("decodedGreenpass",decodedGreenpass)
+  console.log("decodeFromString: decodedGreenpass",decodedGreenpass)
     // Removes HC1:
   const greenpassBody = decodedGreenpass.substr(4)
-  console.log("greenpassBody",greenpassBody)
+  console.log("decodeFromString: greenpassBody",greenpassBody)
   // Decodes string from base64
   const decodedData = base45.decode(greenpassBody)
-  console.log("decodedData",decodedData)
+  console.log("decodeFromString: decodedData",decodedData)
   // zlib unpack it
   const output = pako.inflate(decodedData);
-  console.log("output",output)
+  console.log("decodeFromString: output",output)
   // decoded intial data
   const results = CBOR.decode(output.buffer);
   const [headers1, headers2, cborData, signature] = results;
-  console.log("results",results)
+  console.log("decodeFromString: results",results)
 
   // console.log(JSON.stringify(cborData, null, 2));
   // Encode the cborData as an hex Buffer
   const cborDataBuffer = Buffer.from(Object.values<number>(cborData)).buffer
   // Decode the final data
   const greenpassData = CBOR.decode(cborDataBuffer);
-  console.log("greenpassData",JSON.stringify(greenpassData, null, 2))
+  console.log("decodeFromString: greenpassData",JSON.stringify(greenpassData, null, 2))
   if (greenpassData) {
     const data = greenpassData["-260"]["1"]
     // eslint-disable-next-line dot-notation
