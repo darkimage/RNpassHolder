@@ -15,6 +15,7 @@ import { translate } from "../../i18n"
 import QRCode from "react-native-qrcode-svg"
 import { useTheme } from "@react-navigation/native"
 import dayjs from "dayjs"
+import { saveQRToImage } from "../../services/fs/fs"
 
 export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">> = observer(function ViewPassScreen({navigation}) {
   // Pull in one of our MST stores
@@ -25,6 +26,7 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
   const [pass, setPass] = useState<QRPass>()
   const deleteDialog = useRef<KitDialogRef>()
   const pickerDialog = useRef<KitDialogDatePickerRef>()
+  const qrRef = useRef<any>()
 
   const onBackPress = () => {
     console.log("ViewPassScreen: Navigating home")
@@ -110,6 +112,14 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
     }
   }, [pass])
 
+  const onSaveToGalleryAction = useCallback(() => {
+    if(qrRef.current)
+      qrRef.current?.toDataURL?.(async (data) => {
+        await saveQRToImage(data)
+        ToastAndroid.show("Immagine salvata", ToastAndroid.SHORT)
+      })
+  }, [pass])
+
   const onSetExpiration =  useCallback(() => {
     pickerDialog.current.show({
       title: translate('dialogPicker.setExpirationDate'),
@@ -136,6 +146,7 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
             onDelete={onDelete}
             onSetExpiration={onSetExpiration}
             onSetFavorite={onFavoriteAction}
+            onSave={onSaveToGalleryAction}
         />}
         setStatusBar={false}
         style={[styles.NAV, {backgroundColor: navTheme.colors.background}]}
@@ -144,7 +155,13 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
       <Screen style={[styles.SCREEN, {backgroundColor: navTheme.colors.background}]} preset="fixed">
         {pass &&
           <Layout style={styles.LAYOUT}>
-            <View style={styles.QR}><QRCode size={qrSize} value={pass.qr} /></View>
+            <View style={styles.QR}>
+            <QRCode
+              getRef={(svg) => {qrRef.current = svg}}
+              size={qrSize}
+              value={pass.qr}
+            />
+            </View>
             <ViewPassQrDetails qr={pass} />
           </Layout>
         }
