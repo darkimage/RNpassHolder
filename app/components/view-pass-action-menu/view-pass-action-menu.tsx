@@ -1,7 +1,6 @@
 import * as React from "react"
-import { StyleProp, View, ViewStyle } from "react-native"
+import { StyleProp, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Text } from "../"
 import { Icon, IndexPath, MenuItem, OverflowMenu, TopNavigationAction } from "@ui-kitten/components"
 import { useState } from "react"
 import { translate } from "../../i18n"

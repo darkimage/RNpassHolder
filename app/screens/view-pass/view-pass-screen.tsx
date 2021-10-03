@@ -13,7 +13,6 @@ import { NavigatorParamList } from "../../navigators"
 import { StackScreenProps } from "@react-navigation/stack"
 import { translate } from "../../i18n"
 import QRCode from "react-native-qrcode-svg"
-import { delay } from "../../utils/delay"
 import { useTheme } from "@react-navigation/native"
 import dayjs from "dayjs"
 

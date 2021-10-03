@@ -2,16 +2,9 @@
 /* eslint-disable react-native/no-color-literals */
 import React, { useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
-import {
-  Text,
-  TouchableOpacity,
-  ViewStyle,
-  StyleSheet
-} from 'react-native';
 
-import QRCodeScanner from 'react-native-qrcode-scanner';
-import { Button, Calendar, Datepicker } from "@ui-kitten/components";
-import { KitDialog, KitDialogDatePicker, KitDialogDatePickerRef, KitDialogRef, KitModalLoading, QrScanner } from "../../components";
+import { Button, Calendar } from "@ui-kitten/components";
+import { KitDialog, KitDialogDatePicker, KitDialogDatePickerRef, KitDialogRef, QrScanner } from "../../components";
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
@@ -23,9 +16,9 @@ export const QrScanDevScreen = observer(function QrScanDevScreen() {
   const dialog = useRef<KitDialogRef>(null)
   const dialogPicker = useRef<KitDialogDatePickerRef>(null)
 
-  const onSuccess = (e) => {
-    console.log(e)
-  }
+  // const onSuccess = (e) => {
+  //   console.log(e)
+  // }
 
   // Pull in navigation via hook
   // const navigation = useNavigation()
@@ -75,22 +68,22 @@ export const QrScanDevScreen = observer(function QrScanDevScreen() {
   )
 })
 
-const styles = StyleSheet.create({
-  centerText: {
-    flex: 1,
-    fontSize: 18,
-    padding: 32,
-    color: '#777'
-  },
-  textBold: {
-    fontWeight: '500',
-    color: '#000'
-  },
-  buttonText: {
-    fontSize: 21,
-    color: 'rgb(0,122,255)'
-  },
-  buttonTouchable: {
-    padding: 16
-  }
-});
+// const styles = StyleSheet.create({
+//   centerText: {
+//     flex: 1,
+//     fontSize: 18,
+//     padding: 32,
+//     color: '#777'
+//   },
+//   textBold: {
+//     fontWeight: '500',
+//     color: '#000'
+//   },
+//   buttonText: {
+//     fontSize: 21,
+//     color: 'rgb(0,122,255)'
+//   },
+//   buttonTouchable: {
+//     padding: 16
+//   }
+// });

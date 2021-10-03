@@ -1,5 +1,5 @@
 import * as React from "react"
-import { StyleProp, ViewStyle, StyleSheet, View, Animated, useWindowDimensions } from "react-native"
+import { StyleProp, ViewStyle, Animated, useWindowDimensions } from "react-native"
 import { observer } from "mobx-react-lite"
 import { BottomNavigation, BottomNavigationTab, Icon, Layout, StyleService, useStyleSheet } from "@ui-kitten/components"
 import { translate } from "../../i18n"
@@ -66,7 +66,7 @@ export const KitHomeBottomNav: KitHomeBottomNavCompound = observer(function KitH
 
 const KitHomeBottomNavScreen = observer(function KitHomeBottomNavScreen(props: KitHomeBottomNavScreenProps) {
   const tabContext = React.useContext(KitHomeBottomNavContex)
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const styles = useStyleSheet(stylesScreen)
   const [prevID, setPrevID] = React.useState(props.tabID)
   const slideIn = React.useRef(new Animated.Value(width)).current

@@ -2,7 +2,7 @@
 import { KitDialogRef } from './../../components/kit-dialog/kit-dialog';
 import { DecodedQr, decodeFromImage, decodeFromString } from './../qr/greenpass';
 import Realm, { ObjectSchema } from 'realm';
-import { ForwardedRef, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import dayjs from 'dayjs'
 import { delay } from '../../utils/delay';
 import { translate } from '../../i18n';

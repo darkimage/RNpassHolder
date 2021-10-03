@@ -1,7 +1,7 @@
 import * as React from "react"
 import { BackHandler, StyleProp, StyleSheet, View, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Card, Modal, StyleService, useStyleSheet, Text, TextProps, Layout, Button, styled } from "@ui-kitten/components"
+import { Card, Modal, StyleService, useStyleSheet, Text, TextProps, Layout, Button } from "@ui-kitten/components"
 import { translate } from "../../i18n"
 import { useCallback, useImperativeHandle, useState } from "react"
 import { useFocusEffect } from "@react-navigation/core"

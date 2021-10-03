@@ -1,10 +1,8 @@
 import * as React from "react"
-import { StyleProp, TextStyle, View, ViewStyle } from "react-native"
+import { StyleProp, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
-import { color, typography } from "../../theme"
-import { KitDialog, KitDialogOptions, KitDialogRef, Text } from "../"
-import { flatten } from "ramda"
-import { Calendar, StyleService, useStyleSheet } from "@ui-kitten/components"
+import { KitDialog, KitDialogOptions, KitDialogRef } from "../"
+import { Calendar } from "@ui-kitten/components"
 import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 import { translate } from "../../i18n"
 
