@@ -17,7 +17,8 @@ export interface ViewPassActionMenuProps {
   style?: StyleProp<ViewStyle>,
   onSave?: () => void,
   onDelete?: () => void,
-  onSetExpiration?: () => void
+  onSetExpiration?: () => void,
+  onSetFavorite?: () => void
 }
 
 /**
@@ -39,6 +40,9 @@ export const ViewPassActionMenu = observer(function ViewPassActionMenu(props: Vi
         props?.onSetExpiration?.()
         break;
       case 2:
+        props?.onSetFavorite?.()
+        break;
+      case 3:
         props?.onDelete?.()
         break;
     }
@@ -60,10 +64,8 @@ export const ViewPassActionMenu = observer(function ViewPassActionMenu(props: Vi
       onBackdropPress={() => setVisible(false)}>
       <MenuItem title={translate('viewPass.saveToGallery')} />
       <MenuItem title={translate('viewPass.setExpire')} />
+      <MenuItem title={translate('viewPass.setFavorite')} />
       <MenuItem title={translate('viewPass.delete')} />
     </OverflowMenu>
   )
 })
-
-
-// const styleComp = 

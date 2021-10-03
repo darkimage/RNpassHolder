@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { FC, useCallback, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { BackHandler, Dimensions, View } from "react-native"
+import { BackHandler, Dimensions, ToastAndroid, View } from "react-native"
 import { KitBackAction, KitHeader, Screen, ViewPassActionMenu, ViewPassPlaceholder, ViewPassQrDetails } from "../../components"
 import { StyleService, useStyleSheet, Layout } from "@ui-kitten/components"
 import { useStores } from "../../models"
@@ -20,7 +20,7 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
   // const { someStore, anotherStore } = useStores()
   const styles = useStyleSheet(styleScreen)
   const navTheme = useTheme()
-  const { currentPassStore, statusBarStore } = useStores()
+  const { currentPassStore, statusBarStore, favoritePassStore } = useStores()
   const [pass, setPass] = useState<QRPass>()
 
   const onBackPress = () => {
@@ -59,8 +59,24 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
   }
 
   const qrSize = Dimensions.get('screen').width - 16
-  // Pull in navigation via hook
-  // const navigation = useNavigation()
+
+  const onDeleteAction = useCallback(() => {
+    if (favoritePassStore.id === pass._id.toHexString()) {
+      favoritePassStore.setFavorite('')
+    }
+    removePass(pass)
+    currentPassStore.setPass('')
+    navigation.navigate('home')
+  }, [pass, favoritePassStore.id])
+
+  const onFavoriteAction = useCallback(() => {
+    if (pass) {
+      favoritePassStore.setFavorite(pass._id.toHexString())
+      console.log("ViewPassScreen: onFavoriteAction: id:", favoritePassStore.id)
+      ToastAndroid.show(translate('viewPass.favoriteSetMessage'), ToastAndroid.SHORT)
+    }
+  }, [pass])
+
   return (
     <View style={styles.ROOT}>
       <KitHeader
@@ -68,7 +84,8 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
         accessoryLeft={<KitBackAction onPress={() => navigation.navigate('home')} />}
         accessoryRight={
           <ViewPassActionMenu
-          onDelete={() => onRemove(pass)}
+            onDelete={onDeleteAction}
+            onSetFavorite={onFavoriteAction}
         />}
         setStatusBar={false}
         style={[styles.NAV, {backgroundColor: navTheme.colors.background}]}

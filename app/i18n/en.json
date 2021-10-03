@@ -47,7 +47,9 @@
     "expiresLabel": "Expires:",
     "saveToGallery": "Save to gallery",
     "setExpire": "Set expire date",
-    "delete": "Delete"
+    "delete": "Delete",
+    "setFavorite": "Set Favorite",
+    "favoriteSetMessage": "Pass set as current favorite"
   },
   "pass":{
     "vaccination": "Vaccination",
