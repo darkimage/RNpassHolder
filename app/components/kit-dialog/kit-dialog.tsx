@@ -11,6 +11,7 @@ export interface KitDialogProps {
    * An optional style override useful for padding & margin.
    */
   style?: StyleProp<ViewStyle>,
+  bodyComponent?: React.ReactElement
 }
 
 export interface KitDialogOptions {
@@ -20,7 +21,7 @@ export interface KitDialogOptions {
   descriptionProps?: TextProps,
   status?: "danger" | "info" | "basic",
   cancelText?: string,
-  okText?: string
+  okText?: string,
   onCancel?: () => void,
   onOk?: () => void,
   onBackdropPress?: () => void
@@ -139,7 +140,10 @@ export const KitDialog = observer(function KitDialog(props: KitDialogProps, ref:
         footer={renderFooter(options)}
         style={[styles.ROOT, style]}
       >
-        <Text>{options.description}</Text>
+        {!props?.bodyComponent ?
+          <Text>{options.description}</Text> :
+          props.bodyComponent
+        }
       </Card>
     </Modal>
   )
@@ -149,8 +153,9 @@ const styleComp = StyleService.create({
   ROOT: {
     minWidth: '90%',
     maxWidth: '90%',
-    flex: 1,
+    // flex: 1,
     borderRadius: 10,
+    // minHeight: 250,
     alignSelf: 'center'
   },
   TITLE: {
@@ -164,14 +169,16 @@ const styleComp = StyleService.create({
     // alignItems: 'center'
   },
   FOOTER: {
-    // flex: 1,
+    flex: 1,
     flexDirection: 'row',
     minHeight: 64,
+    alignItems: 'center'
   },
   BUTTON: {
     flex: 1,
     borderRadius: 0,
-    borderWidth: 0
+    borderWidth: 0,
+    alignItems: 'center'
   }
 })
 

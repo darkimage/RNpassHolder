@@ -3,7 +3,10 @@
     "ok": "OK!",
     "cancel": "Cancella",
     "back": "Indietro",
-    "error": "Errore"
+    "error": "Errore",
+    "warning": "Attenzione",
+    "yes": "Si",
+    "no": "No"
   },
   "errors": {
     "invalidEmail": "Invalid email address."
@@ -49,7 +52,8 @@
     "setExpire": "Imposta scadenza",
     "delete": "Elimina",
     "setFavorite": "Imposta come Preferito",
-    "favoriteSetMessage": "Pass impostato come preferito"
+    "favoriteSetMessage": "Pass impostato come preferito",
+    "deleteDialogMessage": "Sei sicuro di voler eliminare questo codice QR?"
   },
   "pass":{
     "vaccination": "Vaccinazione",

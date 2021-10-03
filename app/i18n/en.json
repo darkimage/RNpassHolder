@@ -3,7 +3,10 @@
     "ok": "OK!",
     "cancel": "Cancel",
     "back": "Back",
-    "error": "Error"
+    "error": "Error",
+    "warning": "Warning",
+    "yes": "Yes",
+    "no": "No"
   },
   "errors": {
     "invalidEmail": "Invalid email address."
@@ -49,7 +52,8 @@
     "setExpire": "Set expire date",
     "delete": "Delete",
     "setFavorite": "Set Favorite",
-    "favoriteSetMessage": "Pass set as current favorite"
+    "favoriteSetMessage": "Pass set as current favorite",
+    "deleteDialogMessage": "Are you sure you want to delete this QR Pass?"
   },
   "pass":{
     "vaccination": "Vaccination",

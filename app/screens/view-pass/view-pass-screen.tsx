@@ -1,8 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { FC, useCallback, useEffect, useState } from "react"
+import React, { FC, useCallback, useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { BackHandler, Dimensions, ToastAndroid, View } from "react-native"
-import { KitBackAction, KitHeader, Screen, ViewPassActionMenu, ViewPassPlaceholder, ViewPassQrDetails } from "../../components"
+import { KitBackAction, KitDialog, KitDialogRef, KitHeader, Screen, ViewPassActionMenu, ViewPassPlaceholder, ViewPassQrDetails } from "../../components"
 import { StyleService, useStyleSheet, Layout } from "@ui-kitten/components"
 import { useStores } from "../../models"
 import { getRealmDatabase, QRPass, removePass } from "../../services/database"
@@ -22,6 +22,7 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
   const navTheme = useTheme()
   const { currentPassStore, statusBarStore, favoritePassStore } = useStores()
   const [pass, setPass] = useState<QRPass>()
+  const deleteDialog = useRef<KitDialogRef>()
 
   const onBackPress = () => {
     console.log("ViewPassScreen: Navigating home")
@@ -51,13 +52,6 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
     }, [])
   )
 
-  const onRemove = (passObj: QRPass) => {
-    console.log("ViewPassScreen: onRemove: Called")
-    removePass(passObj)
-    currentPassStore.setPass('')
-    navigation.navigate('home')
-  }
-
   const qrSize = Dimensions.get('screen').width - 16
 
   const onDeleteAction = useCallback(() => {
@@ -79,12 +73,24 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
 
   return (
     <View style={styles.ROOT}>
+      <KitDialog ref={deleteDialog} />
       <KitHeader
         title={translate("viewPass.title")}
         accessoryLeft={<KitBackAction onPress={() => navigation.navigate('home')} />}
         accessoryRight={
           <ViewPassActionMenu
-            onDelete={onDeleteAction}
+            onDelete={() => deleteDialog.current.show({
+              title: translate('common.warning'),
+              status: 'danger',
+              description: translate('viewPass.deleteDialogMessage'),
+              okText: translate('common.yes'),
+              cancelText: translate('common.no'),
+              onOk: () => {
+                deleteDialog.current.dismiss()
+                onDeleteAction()
+              },
+              onCancel: () => deleteDialog.current.dismiss()
+            })}
             onSetFavorite={onFavoriteAction}
         />}
         setStatusBar={false}
