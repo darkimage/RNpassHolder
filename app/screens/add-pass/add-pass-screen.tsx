@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { BackHandler, View } from "react-native"
-import { KitBackAction, KitDialog, KitDialogRef, KitHeader, KitModalLoading, KitSelectSource, QrScanner, Screen } from "../../components"
+import { KitBackAction, KitDialog, KitDialogRef, KitHeader, KitModalLoading, KitSelectSource, QrScanner, QRScannerRef, Screen } from "../../components"
 import { Icon, Layout, StyleService, TopNavigationAction, useStyleSheet, useTheme } from "@ui-kitten/components"
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useStores } from "../../models"
@@ -19,7 +19,8 @@ export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> 
   const {statusBarStore, currentPassStore} = useStores()
   const styles = useStyleSheet(stylesScreen)
   const [showLoading, setShowLoading] = useState(false)
-  const [showScanner, setShowScanner] = useState(false)
+  // const [showScanner, setShowScanner] = useState(false)
+  const qrScanner = useRef<QRScannerRef>()
   const theme = useTheme()
   const dialog = useRef<KitDialogRef>()
 
@@ -49,7 +50,7 @@ export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> 
   }
 
   const onQRCodeRead = async (e: BarCodeReadEvent) => {
-    setShowScanner(false)
+    qrScanner.current.dismiss()
     setShowLoading(true)
     const pass = await addPassfromSource({ fromString: e.data }, dialog)
     setShowLoading(false)
@@ -64,8 +65,8 @@ export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> 
       <KitDialog ref={dialog} />
       <KitModalLoading show={showLoading} />
       <QrScanner
-        show={showScanner}
-        onCancel={() => setShowScanner(false)}
+        ref={qrScanner}
+        onCancel={() => qrScanner.current.dismiss()}
         onRead={onQRCodeRead}
       />
       <KitHeader
@@ -84,7 +85,7 @@ export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> 
           <KitSelectSource
             title={translate('addPass.scanQr')}
             icon={<QRScanIcon  {...iconProps} />}
-            onPress={() => setShowScanner(true)}
+            onPress={() => qrScanner.current.show()}
           />
         </Layout>
       </Screen>

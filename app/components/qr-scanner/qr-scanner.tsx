@@ -1,12 +1,26 @@
+/* eslint-disable react-native/split-platform-components */
 import * as React from "react"
-import { BackHandler, StyleProp, View, ViewStyle } from "react-native"
+import { BackHandler, PermissionsAndroid, StyleProp, View, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
 import QRCodeScanner, { RNQRCodeScannerProps } from "react-native-qrcode-scanner"
 import { Modal, StyleService, Text, useStyleSheet, Button, Card, Layout, Divider } from "@ui-kitten/components"
 import { translate } from "../../i18n"
 import SVGScannerIcon from '../../../assets/svg/qr-scanner-icon.svg'
 import { useFocusEffect } from "@react-navigation/native"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useImperativeHandle, useState } from "react"
+
+async function hasCameraAndroidPermission() {
+  const permission = PermissionsAndroid.PERMISSIONS.CAMERA;
+
+  const hasPermission = await PermissionsAndroid.check(permission);
+  if (hasPermission) {
+    return true;
+  }
+
+  const status = await PermissionsAndroid.request(permission);
+  return status === 'granted';
+}
+
 
 export interface QrScannerProps extends RNQRCodeScannerProps {
   /**
@@ -14,26 +28,30 @@ export interface QrScannerProps extends RNQRCodeScannerProps {
    */
   style?: StyleProp<ViewStyle>,
   /**
-   * Modal State
-   */
-  show: boolean,
-  /**
    * User as exited the modal view
    */
   onCancel: () => void
 }
 
+export interface QRScannerRef {
+  show: () => void,
+  dismiss: () => void
+}
+
 /**
  * A Modal QR Scanner interface
  */
-export const QrScanner = observer(function QrScanner(props: QrScannerProps) {
+export const QrScanner = observer(function QrScanner(props: QrScannerProps, ref: React.ForwardedRef<any>) {
   const { style, onCancel } = props
   const styles = useStyleSheet(styleComp)
-  const [show, setShow] = useState(props.show)
+  const [show, setShow] = useState(false)
 
-  useEffect(() => {
-    setShow(props.show)
-  },[props])
+  useImperativeHandle(ref, () => ({
+    show: async () => {
+      setShow(await hasCameraAndroidPermission())
+    },
+    dismiss: () => { setShow(false) }
+  }) as QRScannerRef)
 
   useFocusEffect(
     useCallback(() => {
@@ -55,7 +73,7 @@ export const QrScanner = observer(function QrScanner(props: QrScannerProps) {
         console.log("QRScanner: Removed Backhandler")
         BackHandler.removeEventListener('hardwareBackPress', onBackPress)
       }
-    }, [show, props.show])
+    }, [show, props])
   )
 
 
@@ -76,10 +94,9 @@ export const QrScanner = observer(function QrScanner(props: QrScannerProps) {
         </View>}
       >
         <View style={styles.QRSCANNER}>
-          <View style={styles.OVERLAY}>
-            <SVGScannerIcon fill={"#fff"} fillOpacity={0.7} width={200} height={200}  />
-          </View>
           <QRCodeScanner
+            showMarker={true}
+            customMarker={<SVGScannerIcon fill={"#fff"} fillOpacity={0.7} width={200} height={200}  />}
             onRead={(e) => props.onRead(e)}
             containerStyle={styles.CAMERACONTAINER}
             cameraStyle={styles.CAMERA}
@@ -88,7 +105,7 @@ export const QrScanner = observer(function QrScanner(props: QrScannerProps) {
       </Card>
     </Modal>
   )
-})
+}, {forwardRef: true})
 
 
 const styleComp = StyleService.create({
@@ -96,6 +113,7 @@ const styleComp = StyleService.create({
     flex: 1,
     margin: 2,
     borderRadius: 20,
+    // maxWidth: '90%',
     // elevation: 12
   },
   CENTER: {
@@ -106,28 +124,20 @@ const styleComp = StyleService.create({
   QRSCANNER: {
     overflow: 'hidden',
     borderRadius: 20,
-    maxWidth: 250,
-    minHeight: 250,
+    // maxWidth: 250,
+    // minHeight: 250,
     flex: 1,
     position: 'relative',
-    alignItems: "center"
+    alignItems: "center",
+    marginVertical: 16,
+    // marginHorizontal: 32
   },
   TITLE: {
     padding: 16,
   },
-  OVERLAY: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0, bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 99
-  },
   CAMERACONTAINER: {
     alignItems: 'center',
     justifyContent: 'center',
-
   },
   ROOT: {
     backgroundColor: 'background-basic-color-1',
@@ -138,15 +148,15 @@ const styleComp = StyleService.create({
     flexDirection: 'column',
     flex: 1,
     paddingVertical: 32,
-    width: 300
+    // width: 300
   },
   BACKDROP: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   CAMERA: {
     overflow: 'hidden',
-    width: 250,
-    height: 250,
+    width: 300,
+    height: 300,
     borderRadius: 20
   }
 })
