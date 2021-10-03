@@ -1,11 +1,12 @@
+/* eslint-disable react-native/split-platform-components */
 /* eslint-disable react-native/no-inline-styles */
 import React, { FC, useCallback, useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { BackHandler, Dimensions, ToastAndroid, View } from "react-native"
-import { KitBackAction, KitDialog, KitDialogRef, KitHeader, Screen, ViewPassActionMenu, ViewPassPlaceholder, ViewPassQrDetails } from "../../components"
+import { KitBackAction, KitDialog, KitDialogDatePicker, KitDialogDatePickerRef, KitDialogRef, KitHeader, Screen, ViewPassActionMenu, ViewPassPlaceholder, ViewPassQrDetails } from "../../components"
 import { StyleService, useStyleSheet, Layout } from "@ui-kitten/components"
 import { useStores } from "../../models"
-import { getRealmDatabase, QRPass, removePass } from "../../services/database"
+import { getRealmDatabase, QRPass, removePass, setPassExpiration } from "../../services/database"
 import { ObjectId } from 'bson'
 import { useFocusEffect } from "@react-navigation/core"
 import { NavigatorParamList } from "../../navigators"
@@ -14,6 +15,7 @@ import { translate } from "../../i18n"
 import QRCode from "react-native-qrcode-svg"
 import { delay } from "../../utils/delay"
 import { useTheme } from "@react-navigation/native"
+import dayjs from "dayjs"
 
 export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">> = observer(function ViewPassScreen({navigation}) {
   // Pull in one of our MST stores
@@ -23,12 +25,36 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
   const { currentPassStore, statusBarStore, favoritePassStore } = useStores()
   const [pass, setPass] = useState<QRPass>()
   const deleteDialog = useRef<KitDialogRef>()
+  const pickerDialog = useRef<KitDialogDatePickerRef>()
 
   const onBackPress = () => {
     console.log("ViewPassScreen: Navigating home")
     navigation.navigate('home')
     return true
   }
+
+  useEffect(() => {
+    const databaseLink = async () => {
+      const onPassChanges: Realm.CollectionChangeCallback<any> = (passes, changes) => {
+        console.log("ViewPassScreen: handler called")
+        changes.newModifications.forEach((index) => {
+          console.log("ViewPassScreen: modifications:", index)
+          const modifiedPass = passes[index] as QRPass
+          console.log("ViewPassScreen: onPassChanges: changeDetected:", modifiedPass)
+          if (modifiedPass._id.toHexString() === pass._id.toHexString()) {
+            console.log("ViewPassScreen: onPassChanges: MODIFIED PASS IS CURRENT PASS... setting new pass")
+            setPass(modifiedPass)
+          }
+        })
+      }
+
+      console.log("ViewPassScreen: set modification handlers")
+      const realm = await getRealmDatabase()
+      const passes = realm.objects("Pass")
+      passes.addListener(onPassChanges)
+    }
+    databaseLink()
+  }, [])
 
   useFocusEffect(() => {
     statusBarStore.setBgColor(navTheme.colors.background)
@@ -63,6 +89,20 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
     navigation.navigate('home')
   }, [pass, favoritePassStore.id])
 
+  const onDelete = useCallback(() =>
+    deleteDialog.current.show({
+    title: translate('common.warning'),
+    status: 'danger',
+    description: translate('viewPass.deleteDialogMessage'),
+    okText: translate('common.yes'),
+    cancelText: translate('common.no'),
+    onOk: () => {
+      deleteDialog.current.dismiss()
+      onDeleteAction()
+    },
+    onCancel: () => deleteDialog.current.dismiss()
+  }), [deleteDialog])
+
   const onFavoriteAction = useCallback(() => {
     if (pass) {
       favoritePassStore.setFavorite(pass._id.toHexString())
@@ -71,26 +111,31 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
     }
   }, [pass])
 
+  const onSetExpiration =  useCallback(() => {
+    pickerDialog.current.show({
+      title: translate('dialogPicker.setExpirationDate'),
+      status: 'basic',
+      onCancel: () => pickerDialog.current.dismiss(),
+      onDateSelect: (date: Date) => {
+        console.log("ViewPassScreen: onDateSelect:", date)
+        console.log("ViewPassScreen: onDateSelect:", pass)
+        setPassExpiration(pass, dayjs(date).format('YYYY-MM-DD'))
+        pickerDialog.current.dismiss()
+      }
+    })
+  },[pickerDialog, pass])
+
   return (
     <View style={styles.ROOT}>
       <KitDialog ref={deleteDialog} />
+      <KitDialogDatePicker ref={pickerDialog} />
       <KitHeader
         title={translate("viewPass.title")}
         accessoryLeft={<KitBackAction onPress={() => navigation.navigate('home')} />}
         accessoryRight={
           <ViewPassActionMenu
-            onDelete={() => deleteDialog.current.show({
-              title: translate('common.warning'),
-              status: 'danger',
-              description: translate('viewPass.deleteDialogMessage'),
-              okText: translate('common.yes'),
-              cancelText: translate('common.no'),
-              onOk: () => {
-                deleteDialog.current.dismiss()
-                onDeleteAction()
-              },
-              onCancel: () => deleteDialog.current.dismiss()
-            })}
+            onDelete={onDelete}
+            onSetExpiration={onSetExpiration}
             onSetFavorite={onFavoriteAction}
         />}
         setStatusBar={false}

@@ -59,6 +59,13 @@
     "vaccination": "Vaccinazione",
     "swab": "Test Molecolare"
   },
+  "setPassExpiration": {
+    "success": "Data di scadenza impostata"
+  },
+  "dialogPicker":{
+    "set": "Imposta data",
+    "setExpirationDate": "Imposta data scadenza"
+  },
   "demoScreen": {
     "howTo": "HOW TO",
     "title": "What’s In This Stack?",

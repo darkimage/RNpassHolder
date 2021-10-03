@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { Button } from "@ui-kitten/components";
-import { KitDialog, KitDialogRef, KitModalLoading, QrScanner } from "../../components";
+import { Button, Calendar, Datepicker } from "@ui-kitten/components";
+import { KitDialog, KitDialogDatePicker, KitDialogDatePickerRef, KitDialogRef, KitModalLoading, QrScanner } from "../../components";
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
@@ -21,6 +21,7 @@ export const QrScanDevScreen = observer(function QrScanDevScreen() {
   // const { someStore, anotherStore } = useStores()
   const [showScanner, setShowScanner] = useState(false)
   const dialog = useRef<KitDialogRef>(null)
+  const dialogPicker = useRef<KitDialogDatePickerRef>(null)
 
   const onSuccess = (e) => {
     console.log(e)
@@ -33,19 +34,34 @@ export const QrScanDevScreen = observer(function QrScanDevScreen() {
       <Button onPress={() => setShowScanner(true)}>Mostra scanner</Button>
       <Button
         onPress={() =>
-          dialog.current.show({
+          // dialog.current.show({
+          //   title: "Prova",
+          //   description: "Prova descrizione",
+          //   okText: "Salva",
+          //   status: 'info',
+          //   onCancel: () => null,
+          //   onBackdropPress: () => dialog.current.dismiss(),
+          // })
+          dialogPicker.current.show({
             title: "Prova",
             description: "Prova descrizione",
             okText: "Salva",
             status: 'info',
             onCancel: () => null,
-            onBackdropPress: () => dialog.current.dismiss(),
+            onBackdropPress: () => dialogPicker.current.dismiss(),
+            onDateSelect: (date) => console.log("QrScanDevScreen:", date)
           })
         }
       >
         Mostra dialogo
       </Button>
-      <KitDialog ref={dialog} />
+      <KitDialog
+        bodyComponent={<Calendar onSelect={(e) => console.log("QrScanDevScreen: Datepicker: select:", e)} />}
+        ref={dialog}
+      />
+      <KitDialogDatePicker
+        ref={dialogPicker}
+      />
       {/* <KitModalLoading show={true}/> */}
       <QrScanner
         show={showScanner}

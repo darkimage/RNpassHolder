@@ -14,7 +14,9 @@
             "headerPaddingHorizontal": 0,
             "headerPaddingVertical": 0,
             "footerPaddingHorizontal": 0,
-            "footerPaddingVertical": 0
+            "footerPaddingVertical": 0,
+            "bodyPaddingHorizontal": 0,
+            "bodyPaddingVertical": 0
           }
         }
       }

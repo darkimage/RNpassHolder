@@ -141,7 +141,10 @@ export const KitDialog = observer(function KitDialog(props: KitDialogProps, ref:
         style={[styles.ROOT, style]}
       >
         {!props?.bodyComponent ?
-          <Text>{options.description}</Text> :
+          <View style={styles.BODY}>
+            <Text>{options.description}</Text>
+          </View>
+          :
           props.bodyComponent
         }
       </Card>
@@ -152,7 +155,7 @@ export const KitDialog = observer(function KitDialog(props: KitDialogProps, ref:
 const styleComp = StyleService.create({
   ROOT: {
     minWidth: '90%',
-    maxWidth: '90%',
+    // maxWidth: '90%',
     // flex: 1,
     borderRadius: 10,
     // minHeight: 250,
@@ -168,14 +171,19 @@ const styleComp = StyleService.create({
     // justifyContent: 'center',
     // alignItems: 'center'
   },
+  BODY: {
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+  },
   FOOTER: {
-    flex: 1,
+    // flex: 1,
     flexDirection: 'row',
     minHeight: 64,
     alignItems: 'center'
   },
   BUTTON: {
     flex: 1,
+    height: '100%',
     borderRadius: 0,
     borderWidth: 0,
     alignItems: 'center'

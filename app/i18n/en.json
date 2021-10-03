@@ -59,6 +59,13 @@
     "vaccination": "Vaccination",
     "swab": "Swab Test"
   },
+  "setPassExpiration": {
+    "success": "Expiration date successfully set"
+  },
+  "dialogPicker":{
+    "set": "Set date",
+    "setExpirationDate": "Set expiration date"
+  },
   "demoScreen": {
     "howTo": "HOW TO",
     "title": "What’s In This Stack?",

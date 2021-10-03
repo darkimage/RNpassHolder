@@ -1,3 +1,4 @@
+/* eslint-disable react-native/split-platform-components */
 import { KitDialogRef } from './../../components/kit-dialog/kit-dialog';
 import { DecodedQr, decodeFromImage, decodeFromString } from './../qr/greenpass';
 import Realm, { ObjectSchema } from 'realm';
@@ -150,7 +151,7 @@ export async function addPass(passData: DecodedQr): Promise<QRPass | null> {
     })
     return pass
   } catch (error) {
-    console.error(error)
+    console.error("addPass:",error)
     return null
   }
 }
@@ -166,7 +167,23 @@ export async function removePass(pass: QRPass): Promise<boolean> {
     ToastAndroid.show(translate('addPass.removedMessage'), ToastAndroid.SHORT)
     return true
   } catch (error) {
-    console.error(error)
+    console.error("removePass:",error)
+    return false
+  }
+}
+
+export async function setPassExpiration(pass: QRPass, expiration: string): Promise<boolean>{
+  if (!pass || pass == null || pass === undefined)
+    return null
+  try {
+    const realm = await getRealmDatabase();
+    realm.write(() => {
+      pass.expires = expiration
+    })
+    ToastAndroid.show(translate('setPassExpiration.success'), ToastAndroid.SHORT)
+    return true
+  } catch (error) {
+    console.error("setPassExpiration:", error)
     return false
   }
 }
