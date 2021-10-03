@@ -116,7 +116,6 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
     if(qrRef.current)
       qrRef.current?.toDataURL?.(async (data) => {
         await saveQRToImage(data)
-        ToastAndroid.show("Immagine salvata", ToastAndroid.SHORT)
       })
   }, [pass])
 

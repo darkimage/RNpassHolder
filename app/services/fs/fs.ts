@@ -1,7 +1,7 @@
 /* eslint-disable react-native/split-platform-components */
 import dayjs from 'dayjs'
 import rnfs from 'react-native-fs'
-import { PermissionsAndroid, Platform } from "react-native";
+import { PermissionsAndroid, Platform, ToastAndroid } from "react-native";
 import CameraRoll from "@react-native-community/cameraroll";
 
 async function hasFSAndroidPermission() {
@@ -25,7 +25,8 @@ export async function saveQRToImage(data: string): Promise<boolean> {
       return false
     } else {
       await rnfs.writeFile(uri, data, 'base64')
-      await CameraRoll.save(uri, { type:'photo', album: "Safe Pass QR" })
+      await CameraRoll.save(uri, { type: 'photo', album: "Safe Pass QR" })
+      ToastAndroid.show("Immagine salvata", ToastAndroid.SHORT)
       return true
     }
   } catch (error) {
