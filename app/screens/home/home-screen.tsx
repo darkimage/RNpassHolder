@@ -51,7 +51,7 @@ export const HomeScreen: FC<StackScreenProps<NavigatorParamList, "home">> = obse
     />
     <Screen style={styles.ROOT} preset="fixed">
       <KitHomeBottomNav>
-        <KitHomeBottomNav.Screen component={<PassListScreen />} tabID={0} />
+        <KitHomeBottomNav.Screen component={<PassListScreen navigation={navigation} />} tabID={0} />
         <KitHomeBottomNav.Screen component={<OptionsScreen />} tabID={1} />
       </KitHomeBottomNav>
     </Screen>

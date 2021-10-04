@@ -39,6 +39,8 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
       const onPassChanges: Realm.CollectionChangeCallback<any> = (passes, changes) => {
         console.log("ViewPassScreen: handler called")
         changes.newModifications.forEach((index) => {
+          if (!pass)
+            return
           console.log("ViewPassScreen: modifications:", index)
           const modifiedPass = passes[index] as QRPass
           console.log("ViewPassScreen: onPassChanges: changeDetected:", modifiedPass)
@@ -55,7 +57,7 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
       passes.addListener(onPassChanges)
     }
     databaseLink()
-  }, [])
+  }, [pass])
 
   useFocusEffect(() => {
     statusBarStore.setBgColor(navTheme.colors.background)
@@ -82,6 +84,7 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
   const qrSize = Dimensions.get('screen').width - 16
 
   const onDeleteAction = useCallback(() => {
+    console.log("ViewPassScreen: onDeleteAction:", pass)
     if (favoritePassStore.id === pass._id.toHexString()) {
       favoritePassStore.setFavorite('')
     }
@@ -102,7 +105,7 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
       onDeleteAction()
     },
     onCancel: () => deleteDialog.current.dismiss()
-  }), [deleteDialog])
+  }), [deleteDialog, pass, favoritePassStore.id])
 
   const onFavoriteAction = useCallback(() => {
     if (pass) {

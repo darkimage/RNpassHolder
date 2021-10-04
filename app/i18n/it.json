@@ -66,6 +66,10 @@
     "set": "Imposta data",
     "setExpirationDate": "Imposta data scadenza"
   },
+  "emptyList":{
+    "emptyMessage": "Sembra che tu non abbia nessun pass...",
+    "addOne": "Inizia aggiungendone uno"
+  },
   "demoScreen": {
     "howTo": "HOW TO",
     "title": "What’s In This Stack?",

@@ -66,6 +66,10 @@
     "set": "Set date",
     "setExpirationDate": "Set expiration date"
   },
+  "emptyList":{
+    "emptyMessage": "Looks like you have no passes...",
+    "addOne": "Start adding one"
+  },
   "demoScreen": {
     "howTo": "HOW TO",
     "title": "What’s In This Stack?",

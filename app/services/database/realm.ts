@@ -98,7 +98,7 @@ export function useGetPassListQuery() {
  */
 export function useRealmResultsHook(query, args = []) {
   const queryValidData = args ? query(args) : query()
-  const [data, setData] = useState(queryValidData !== null ? [...queryValidData] : [])
+  const [data, setData] = useState(queryValidData !== null ? [...queryValidData] : null)
 
   useEffect(() => {
     function handleChange(newData) {

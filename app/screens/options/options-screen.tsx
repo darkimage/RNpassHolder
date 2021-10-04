@@ -2,10 +2,11 @@ import React, { useState } from "react"
 import { observer } from "mobx-react-lite"
 import { FlatList, FlatListProps, View, ViewStyle } from "react-native"
 import { KitField, KitFieldProps, Screen } from "../../components"
-import { StyleService, useStyleSheet, Text, Toggle, Divider } from "@ui-kitten/components"
+import { StyleService, useStyleSheet, Text, Toggle, Divider, Button } from "@ui-kitten/components"
 import { types } from "@babel/core"
 import { useStores } from "../../models"
 import { translate } from "../../i18n"
+import { navigate } from "../../navigators"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 
@@ -26,12 +27,24 @@ interface OptionListItem extends KitFieldProps{
   key: string | number
 }
 
+const devItems: Array<OptionListItem> = [
+  {
+    key: 'dev-test',
+    label: <Button onPress={() => navigate("qrTest")}>Go to DEV Screen</Button>
+  },
+  {
+    key: 'dev-test-1',
+    label: <Button onPress={()=> navigate("viewPass")}>Go to View Screen</Button>
+  }
+]
+
 const optionsData: Array<OptionListItem> = [
   {
     key: 'AlwayShowFav',
     label: translate('options.AlwayShowFav'),
     accessoryRight: <OptionsShowFavoriteToggle />
-  }
+  },
+  ...devItems
 ]
 
 export const OptionsScreen = observer(function OptionsScreen() {
