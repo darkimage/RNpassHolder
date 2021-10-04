@@ -4,7 +4,7 @@
  * Generally speaking, it will contain an auth flow (registration, login, forgot password)
  * and a "main" flow which the user will use once logged in.
  */
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { AppState, useColorScheme, View, ViewStyle } from "react-native"
 import { NavigationContainer, DefaultTheme, DarkTheme, Theme, useTheme as useNavTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
@@ -15,6 +15,9 @@ import { useStores } from "../models"
 import { KitStatusbar } from "../components"
 import { useTheme } from "@ui-kitten/components"
 import { navigate } from "."
+import AnimatedSplash from 'react-native-animated-splash-screen'
+import { delay } from "../utils/delay"
+import LottieView from "lottie-react-native";
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -72,13 +75,21 @@ interface NavigationProps extends Partial<React.ComponentProps<typeof Navigation
 
 export const AppNavigator = (props: NavigationProps) => {
   const theme = useTheme()
+  const navTheme = useNavTheme()
   const { lockedStore, themeStore, favoritePassStore, currentPassStore, optionShowFavoriteStore } = useStores()
-  
+  const [loaded, setLoaded] = useState(false)
+
   useEffect(() => {
     if (favoritePassStore.id !== '' && optionShowFavoriteStore.show) {
       currentPassStore.setPass(favoritePassStore.id)
       navigate('viewPass')
     }
+    const load = async () => {
+      setLoaded(false)
+      await delay(2500)
+      setLoaded(true)
+    }
+    load()
   }, [])
 
   const KitThemeLight: Theme = {
@@ -106,13 +117,20 @@ export const AppNavigator = (props: NavigationProps) => {
   }, [AppState.currentState])
 
   return (
-    <NavigationContainer
-      ref={navigationRef}
-      theme={themeStore.current === 'dark' ? KitThemedark : KitThemeLight}
-      {...props}
+    <AnimatedSplash
+      isLoaded={loaded}
+      logoHeight={250}
+      logoWidth={250}
+      customComponent={<LottieView imageAssetsFolder={'lottie/logo'} source={require("../../assets/animations/data.json")} autoPlay />}
     >
-      <AppStack />
-    </NavigationContainer>
+      <NavigationContainer
+        ref={navigationRef}
+        theme={themeStore.current === 'dark' ? KitThemedark : KitThemeLight}
+        {...props}
+      >
+        <AppStack />
+      </NavigationContainer>
+    </AnimatedSplash>
   )
 }
 

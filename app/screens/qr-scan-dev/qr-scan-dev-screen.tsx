@@ -5,7 +5,7 @@ import { observer } from "mobx-react-lite"
 
 import { Button, Calendar } from "@ui-kitten/components";
 import { KitDialog, KitDialogDatePicker, KitDialogDatePickerRef, KitDialogRef, QrScanner } from "../../components";
-
+import LottieView from "lottie-react-native";
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 
@@ -39,31 +39,31 @@ export const QrScanDevScreen = observer(function QrScanDevScreen() {
             title: "Prova",
             description: "Prova descrizione",
             okText: "Salva",
-            status: 'info',
+            status: "info",
             onCancel: () => null,
             onBackdropPress: () => dialogPicker.current.dismiss(),
-            onDateSelect: (date) => console.log("QrScanDevScreen:", date)
+            onDateSelect: (date) => console.log("QrScanDevScreen:", date),
           })
         }
       >
         Mostra dialogo
       </Button>
       <KitDialog
-        bodyComponent={<Calendar onSelect={(e) => console.log("QrScanDevScreen: Datepicker: select:", e)} />}
+        bodyComponent={
+          <Calendar onSelect={(e) => console.log("QrScanDevScreen: Datepicker: select:", e)} />
+        }
         ref={dialog}
       />
-      <KitDialogDatePicker
-        ref={dialogPicker}
-      />
+      <KitDialogDatePicker ref={dialogPicker} />
       {/* <KitModalLoading show={true}/> */}
       <QrScanner
-        show={showScanner}
         onRead={(e) => {
           setShowScanner(false)
           console.log(e)
         }}
         onCancel={() => setShowScanner(false)}
       />
+      <LottieView imageAssetsFolder={'lottie/logo'} source={require("../../../assets/animations/data.json")} autoPlay />
     </>
   )
 })
