@@ -35,28 +35,34 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
   }
 
   useEffect(() => {
+    let passes: Realm.Results<Realm.Object> = null
+    const onPassChanges: Realm.CollectionChangeCallback<any> = (passes, changes) => {
+      console.log("ViewPassScreen: handler called")
+      changes.newModifications.forEach((index) => {
+        if (!pass)
+          return
+        console.log("ViewPassScreen: modifications:", index)
+        const modifiedPass = passes[index] as QRPass
+        console.log("ViewPassScreen: onPassChanges: changeDetected:", modifiedPass)
+        if (modifiedPass._id.toHexString() === pass._id.toHexString()) {
+          console.log("ViewPassScreen: onPassChanges: MODIFIED PASS IS CURRENT PASS... setting new pass")
+          setPass(modifiedPass)
+        }
+      })
+    }
     const databaseLink = async () => {
-      const onPassChanges: Realm.CollectionChangeCallback<any> = (passes, changes) => {
-        console.log("ViewPassScreen: handler called")
-        changes.newModifications.forEach((index) => {
-          if (!pass)
-            return
-          console.log("ViewPassScreen: modifications:", index)
-          const modifiedPass = passes[index] as QRPass
-          console.log("ViewPassScreen: onPassChanges: changeDetected:", modifiedPass)
-          if (modifiedPass._id.toHexString() === pass._id.toHexString()) {
-            console.log("ViewPassScreen: onPassChanges: MODIFIED PASS IS CURRENT PASS... setting new pass")
-            setPass(modifiedPass)
-          }
-        })
-      }
-
       console.log("ViewPassScreen: set modification handlers")
       const realm = await getRealmDatabase()
-      const passes = realm.objects("Pass")
+      passes = realm.objects("Pass")
       passes.addListener(onPassChanges)
     }
     databaseLink()
+    return () => {
+      if (passes) {
+        console.log("ViewPassScreen: removing realm handler")
+        passes.removeListener(onPassChanges)
+      }
+    }
   }, [pass])
 
   useFocusEffect(() => {
