@@ -2,10 +2,11 @@ import * as React from "react"
 import { StyleProp, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
 import { KitDialog, KitDialogOptions, KitDialogRef } from "../"
-import { Calendar } from "@ui-kitten/components"
+import { Calendar, NativeDateService, I18nConfig } from "@ui-kitten/components"
 import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 import { translate } from "../../i18n"
 import dayjs from "dayjs"
+import I18n from "i18n-js"
 
 export interface KitDialogDatePickerProps {
   /**
@@ -21,6 +22,32 @@ export interface KitDialogDatePickerOptions extends KitDialogOptions {
 export interface KitDialogDatePickerRef extends KitDialogRef {
   show: (opts: KitDialogDatePickerOptions) => void,
 }
+
+const IT: I18nConfig = {
+  dayNames: {
+    short: ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"],
+    long: ["Domenica", "Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi", "Sabato"],
+  },
+  monthNames: {
+    short: ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"],
+    long: [
+      "Gennaio",
+      "Febbraio",
+      "Marzo",
+      "Aprile",
+      "Maggio",
+      "Giugno",
+      "Luglio",
+      "Agosto",
+      "Settembre",
+      "Ottobre",
+      "Novembre",
+      "Dicembre",
+    ],
+  },
+}
+
+const dateService = new NativeDateService('IT', {i18n: IT, startDayOfWeek: 1})
 
 /**
  * Describe your component here
@@ -68,6 +95,7 @@ export const KitDialogDatePicker = observer(function KitDialogDatePicker(props: 
       ref={dialog}
       bodyComponent={
         <Calendar
+          dateService={dateService}
           date={date}
           onSelect={onSelect}
           min={dayjs().subtract(5, 'year').toDate()}
