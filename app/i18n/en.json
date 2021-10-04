@@ -51,8 +51,10 @@
     "saveToGallery": "Save to gallery",
     "setExpire": "Set expire date",
     "delete": "Delete",
-    "setFavorite": "Set Favorite",
+    "setFavorite": "Set as Favorite",
+    "removeFavorite": "Remove as Favorite",
     "favoriteSetMessage": "Pass set as current favorite",
+    "favoriteRemoveMessage": "Pass removed as current favorite",
     "deleteDialogMessage": "Are you sure you want to delete this QR Pass?"
   },
   "pass":{

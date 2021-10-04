@@ -89,6 +89,13 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
 
   const qrSize = Dimensions.get('screen').width - 16
 
+  const onRemoveFavoriteAction = useCallback(() => {
+    if (favoritePassStore.id === pass._id.toHexString()) {
+      favoritePassStore.setFavorite('')
+      ToastAndroid.show(translate('viewPass.favoriteRemoveMessage'), ToastAndroid.SHORT)
+    }
+  }, [favoritePassStore.id, pass])
+
   const onDeleteAction = useCallback(() => {
     console.log("ViewPassScreen: onDeleteAction:", pass)
     if (favoritePassStore.id === pass._id.toHexString()) {
@@ -155,6 +162,7 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
             onSetExpiration={onSetExpiration}
             onSetFavorite={onFavoriteAction}
             onSave={onSaveToGalleryAction}
+            onRemoveFavorite={onRemoveFavoriteAction}
         />}
         setStatusBar={false}
         style={[styles.NAV, {backgroundColor: navTheme.colors.background}]}

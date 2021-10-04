@@ -52,7 +52,9 @@
     "setExpire": "Imposta scadenza",
     "delete": "Elimina",
     "setFavorite": "Imposta come Preferito",
+    "removeFavorite": "Rimuovi come Preferito",
     "favoriteSetMessage": "Pass impostato come preferito",
+    "favoriteRemoveMessage": "Pass rimosso come preferito",
     "deleteDialogMessage": "Sei sicuro di voler eliminare questo codice QR?"
   },
   "pass":{

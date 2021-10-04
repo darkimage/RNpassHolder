@@ -1,9 +1,10 @@
 import * as React from "react"
 import { StyleProp, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Icon, IndexPath, MenuItem, OverflowMenu, TopNavigationAction } from "@ui-kitten/components"
+import { Icon, MenuItem, OverflowMenu, TopNavigationAction } from "@ui-kitten/components"
 import { useState } from "react"
 import { translate } from "../../i18n"
+import { useStores } from "../../models"
 
 const BurgerIcon = (props) => (
   <Icon {...props} name="more-vertical" />
@@ -17,7 +18,8 @@ export interface ViewPassActionMenuProps {
   onSave?: () => void,
   onDelete?: () => void,
   onSetExpiration?: () => void,
-  onSetFavorite?: () => void
+  onSetFavorite?: () => void,
+  onRemoveFavorite?: () => void,
 }
 
 /**
@@ -26,25 +28,10 @@ export interface ViewPassActionMenuProps {
 export const ViewPassActionMenu = observer(function ViewPassActionMenu(props: ViewPassActionMenuProps) {
 
   const [visible, setVisible] = useState(false);
+  const {favoritePassStore, currentPassStore} = useStores()
 
-  const onItemSelect = (index: IndexPath) => {
-    console.log("ViewPassActionMenu: Index:", index)
-    console.log("ViewPassActionMenu: Props:", props)
+  const onItemSelect = () => {
     setVisible(false);
-    switch (index.row) {
-      case 0:
-        props?.onSave?.()
-        break;
-      case 1:
-        props?.onSetExpiration?.()
-        break;
-      case 2:
-        props?.onSetFavorite?.()
-        break;
-      case 3:
-        props?.onDelete?.()
-        break;
-    }
   };
 
   const renderNavAction = () => (
@@ -55,16 +42,19 @@ export const ViewPassActionMenu = observer(function ViewPassActionMenu(props: Vi
     />
   )
 
+  const isFavorite = currentPassStore.id === favoritePassStore.id
+
   return (
     <OverflowMenu
       anchor={renderNavAction}
       visible={visible}
       onSelect={onItemSelect}
       onBackdropPress={() => setVisible(false)}>
-      <MenuItem title={translate('viewPass.saveToGallery')} />
-      <MenuItem title={translate('viewPass.setExpire')} />
-      <MenuItem title={translate('viewPass.setFavorite')} />
-      <MenuItem title={translate('viewPass.delete')} />
+      <MenuItem title={translate('viewPass.saveToGallery')} onPress={props?.onSave}/>
+      <MenuItem title={translate('viewPass.setExpire')} onPress={props?.onSetExpiration}/>
+      <MenuItem title={translate('viewPass.setFavorite')} onPress={props?.onSetFavorite}/>
+      {isFavorite && <MenuItem title={translate('viewPass.removeFavorite')} onPress={props?.onRemoveFavorite}/>}
+      <MenuItem title={translate('viewPass.delete')} onPress={props?.onDelete}/>
     </OverflowMenu>
   )
 })
