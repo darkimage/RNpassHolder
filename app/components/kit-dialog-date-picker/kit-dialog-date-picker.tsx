@@ -5,6 +5,7 @@ import { KitDialog, KitDialogOptions, KitDialogRef } from "../"
 import { Calendar } from "@ui-kitten/components"
 import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react"
 import { translate } from "../../i18n"
+import dayjs from "dayjs"
 
 export interface KitDialogDatePickerProps {
   /**
@@ -69,6 +70,8 @@ export const KitDialogDatePicker = observer(function KitDialogDatePicker(props: 
         <Calendar
           date={date}
           onSelect={onSelect}
+          min={dayjs().subtract(5, 'year').toDate()}
+          max={dayjs().add(5, 'year').toDate()}
         />
       }
     />
