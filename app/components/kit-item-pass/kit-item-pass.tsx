@@ -7,7 +7,6 @@ import { QRPass } from "../../services/database"
 import dayjs from "dayjs"
 import { useStores } from "../../models"
 import { useCallback, useMemo } from "react"
-import { navigate } from "../../navigators"
 import { EvaStatus } from "@ui-kitten/components/devsupport"
 
 export interface KitItemPassProps {

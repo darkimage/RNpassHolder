@@ -14,6 +14,7 @@ import { testKeychain, testREALM } from "../library-tests"
 import { useStores } from "../models"
 import { KitStatusbar } from "../components"
 import { useTheme } from "@ui-kitten/components"
+import { navigate } from "."
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -41,7 +42,7 @@ export type NavigatorParamList = {
 const Stack = createNativeStackNavigator<NavigatorParamList>()
 
 const AppStack = () => {
-  const {colors} = useNavTheme()
+  const { colors } = useNavTheme()
 
   const rootViewStyle: ViewStyle = {
     flex: 1,
@@ -54,11 +55,11 @@ const AppStack = () => {
       screenOptions={{headerShown: false}}
       initialRouteName="home"
     >
-      <Stack.Screen name="welcome" component={WelcomeScreen} />
+      {/* <Stack.Screen name="welcome" component={WelcomeScreen} /> */}
       <Stack.Screen name="home" component={HomeScreen} />
-      <Stack.Screen name="demo" component={DemoScreen} />
+      {/* <Stack.Screen name="demo" component={DemoScreen} /> */}
       <Stack.Screen name="addPass" component={AddPassScreen} />
-      <Stack.Screen name="demoList" component={DemoListScreen} />
+      {/* <Stack.Screen name="demoList" component={DemoListScreen} /> */}
       <Stack.Screen name="qrTest" component={QrScanDevScreen} />
       <Stack.Screen name="viewPass" component={ViewPassScreen} />
       </Stack.Navigator>
@@ -70,10 +71,16 @@ const AppStack = () => {
 interface NavigationProps extends Partial<React.ComponentProps<typeof NavigationContainer>> {}
 
 export const AppNavigator = (props: NavigationProps) => {
-  const { themeStore } = useStores()
   const theme = useTheme()
-  const {lockedStore} = useStores()
+  const { lockedStore, themeStore, favoritePassStore, currentPassStore, optionShowFavoriteStore } = useStores()
   
+  useEffect(() => {
+    if (favoritePassStore.id !== '' && optionShowFavoriteStore.show) {
+      currentPassStore.setPass(favoritePassStore.id)
+      navigate('viewPass')
+    }
+  }, [])
+
   const KitThemeLight: Theme = {
     dark: false,
     colors: {
