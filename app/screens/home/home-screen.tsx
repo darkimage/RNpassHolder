@@ -36,22 +36,17 @@ const AddPass = (props: AppPaddProps) => {
 
 export const HomeScreen: FC<StackScreenProps<NavigatorParamList, "home">> = observer(function HomeScreen({navigation}) {
   const styles = useStyleSheet(styleScreen)
-  const { lockedStore } = useStores()
-
-  useEffect(() => {
-    lockedStore.setLocked(false)
-  }, [])
 
   return (<View style={styles.VIEWROOT}>
     <KitHeader
-      setStatusBar={!lockedStore.locked}
+      setStatusBar={true}
       title={<KitTitle />}
       accessoryLeft={<KitThemeSwitch />}
       accessoryRight={<AddPass navigation={navigation} />}
     />
     <Screen style={styles.ROOT} preset="fixed">
       <KitHomeBottomNav>
-        <KitHomeBottomNav.Screen component={<PassListScreen navigation={navigation} />} tabID={0} />
+        <KitHomeBottomNav.Screen component={<PassListScreen navigation={navigation} route={undefined} />} tabID={0} />
         <KitHomeBottomNav.Screen component={<OptionsScreen />} tabID={1} />
       </KitHomeBottomNav>
     </Screen>

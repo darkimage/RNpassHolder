@@ -4,8 +4,9 @@ import React, { useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 
 import { Button, Calendar } from "@ui-kitten/components";
-import { KitDialog, KitDialogDatePicker, KitDialogDatePickerRef, KitDialogRef, QrScanner } from "../../components";
+import { KitDialog, KitDialogDatePicker, KitDialogDatePickerRef, KitDialogRef, KitLock, QrScanner } from "../../components";
 import LottieView from "lottie-react-native";
+import PINCode, { hasUserSetPinCode } from "@haskkor/react-native-pincode";
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 
@@ -63,7 +64,8 @@ export const QrScanDevScreen = observer(function QrScanDevScreen() {
         }}
         onCancel={() => setShowScanner(false)}
       />
-      <LottieView imageAssetsFolder={'lottie/logo'} source={require("../../../assets/animations/data.json")} autoPlay />
+      <LottieView source={require("../../../assets/animations/logo-intro.json")} autoPlay />
+      <KitLock status="enter" />
     </>
   )
 })

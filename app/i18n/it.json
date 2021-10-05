@@ -6,7 +6,9 @@
     "error": "Errore",
     "warning": "Attenzione",
     "yes": "Si",
-    "no": "No"
+    "no": "No",
+    "delete": "Cancella",
+    "exit": "Esci"
   },
   "errors": {
     "invalidEmail": "Invalid email address."
@@ -71,6 +73,23 @@
   "emptyList":{
     "emptyMessage": "Sembra che tu non abbia nessun pass...",
     "addOne": "Inizia aggiungendone uno"
+  },
+  "pinCode":{
+    "titleEnter": "Inserisci il Codice PIN",
+    "titleValidationFailed": "Codice PIN insicuro",
+    "touchIDSentence": "Per sbloccare i tuoi QR Pass",
+    "touchIDTitle": "Autenticazioe Richiesta",
+    "subtitleChoose": "per mantenere i tuoi QR Pass sicuri",
+    "subtitleError": "Per Piacere riprova",
+    "textButtonLockedPage": "Esci",
+    "textCancelButtonTouchID": "Indietro",
+    "textDescriptionLockedPage": "Per proteggere i tuoi QR Pass, l'accesso e stato bloccato per %{timeLocked} minuti.",
+    "textSubDescriptionLockedPage": "Ritorna tra poco e riprova.",
+    "textTitleLockedPage": "Numero massimo di tentativi raggiunto",
+    "titleAttemptFailed": "Codice PIN incorretto",
+    "titleChoose": "1 - Scegli un codice PIN",
+    "titleConfirm": "2 - Conferma il codice PIN",
+    "titleConfirmFailed": "I PIN non corrispondono"
   },
   "demoScreen": {
     "howTo": "HOW TO",

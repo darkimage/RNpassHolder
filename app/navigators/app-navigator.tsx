@@ -4,7 +4,7 @@
  * Generally speaking, it will contain an auth flow (registration, login, forgot password)
  * and a "main" flow which the user will use once logged in.
  */
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { AppState, useColorScheme, View, ViewStyle } from "react-native"
 import { NavigationContainer, DefaultTheme, DarkTheme, Theme, useTheme as useNavTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
@@ -78,6 +78,7 @@ export const AppNavigator = (props: NavigationProps) => {
   const navTheme = useNavTheme()
   const { lockedStore, themeStore, favoritePassStore, currentPassStore, optionShowFavoriteStore } = useStores()
   const [loaded, setLoaded] = useState(false)
+  const appState = useRef(AppState.currentState);
 
   useEffect(() => {
     if (favoritePassStore.id !== '' && optionShowFavoriteStore.show) {
@@ -110,18 +111,34 @@ export const AppNavigator = (props: NavigationProps) => {
   }
 
   useEffect(() => {
-    if (AppState.currentState === 'background') {
-      console.log("AppNavigator: App entering background.... locking")
-      lockedStore.setLocked(true)
+    const onAppStateChange = nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        console.log("AppNavigator: AppState: App has come to the foreground!");
+        lockedStore.setLocked(true)
+      } else {
+        console.log("AppNavigator: AppState: App has come to the background!");
+      }
+
+      appState.current = nextAppState;
+      console.log("AppNavigator: AppState:", appState.current);
     }
-  }, [AppState.currentState])
+    AppState.addEventListener("change", onAppStateChange );
+
+    return () => {
+      console.log("AppNavigator: AppState: removing handler");
+      AppState.removeEventListener("change", onAppStateChange)
+    };
+  }, []);
 
   return (
     <AnimatedSplash
       isLoaded={loaded}
       logoHeight={250}
       logoWidth={250}
-      customComponent={<LottieView imageAssetsFolder={'lottie/logo'} source={require("../../assets/animations/data.json")} autoPlay />}
+      customComponent={<LottieView imageAssetsFolder={'lottie/logo'} source={require("../../assets/animations/logo-intro.json")} autoPlay />}
     >
       <NavigationContainer
         ref={navigationRef}
