@@ -62,7 +62,6 @@ export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> 
 
   return (
     <View style={styles.ROOT}>
-      <KitLock status="enter" />
       <KitDialog ref={dialog} />
       <KitModalLoading show={showLoading} />
       <QrScanner

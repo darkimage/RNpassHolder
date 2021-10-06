@@ -39,7 +39,6 @@ export const HomeScreen: FC<StackScreenProps<NavigatorParamList, "home">> = obse
 
   return (
     <View style={styles.VIEWROOT}>
-    <KitLock status="enter" />
     <KitHeader
       setStatusBar={true}
       title={<KitTitle />}

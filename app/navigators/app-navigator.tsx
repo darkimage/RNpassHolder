@@ -6,21 +6,21 @@
  */
 import React, { useEffect, useRef, useState } from "react"
 import { AppState, useColorScheme, View, ViewStyle } from "react-native"
-import { NavigationContainer, DefaultTheme, DarkTheme, Theme, useTheme as useNavTheme } from "@react-navigation/native"
+import { NavigationContainer, DefaultTheme, DarkTheme, Theme, useTheme as useNavTheme, useNavigationState } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { WelcomeScreen, DemoScreen, DemoListScreen, HomeScreen, AddPassScreen, QrScanDevScreen, ViewPassScreen, ChooseScreen } from "../screens"
-import { navigationRef } from "./navigation-utilities"
+import { WelcomeScreen, DemoScreen, DemoListScreen, HomeScreen, AddPassScreen, QrScanDevScreen, ViewPassScreen, ChooseScreen, LockScreen } from "../screens"
+import { navigate, navigationRef } from "./navigation-utilities"
 import { testKeychain, testREALM } from "../library-tests"
 import { useStores } from "../models"
 import { keyChainName, KitLock, KitStatusbar } from "../components"
 import { useTheme } from "@ui-kitten/components"
-import { navigate } from "."
 import AnimatedSplash from 'react-native-animated-splash-screen'
 import { delay } from "../utils/delay"
 import LottieView from "lottie-react-native";
 import { hasUserSetPinCode } from "@haskkor/react-native-pincode"
 import { IntroScreen } from "../screens/intro/intro-screen"
 import { observer } from "mobx-react-lite"
+import { has } from "mobx"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -43,19 +43,75 @@ export type NavigatorParamList = {
   qrTest: undefined,
   viewPass: undefined,
   intro: undefined,
-  choose: undefined
+  choose: undefined,
+  lock: undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createNativeStackNavigator<NavigatorParamList>()
 
-const AppStack = () => {
+const AppStack = observer(() => {
   const { colors } = useNavTheme()
+  const { lockedStore } = useStores()
+  const navState = useNavigationState(state => state)
+  const [lastRoute, setLastRoute] = useState<string>()
+  const [hasPin, setHasPin] = useState()
+  const appState = useRef(AppState.currentState)
+  // const {} = useNavigationState()
 
   const rootViewStyle: ViewStyle = {
     flex: 1,
     backgroundColor: colors.background
   }
+
+  useEffect(() => {
+    // console.log("AppStack: navigationRef.getRootState:", navigationRef.getState())
+  }, [navigationRef])
+
+  useEffect(() => {
+    console.log("AppStack: lockedStore:", lockedStore.locked)
+    console.log("AppStack: navigationRef history:", navState)
+    if (lockedStore.locked) {
+      setLastRoute(navState?.routes[navState.index].name)
+    }
+    if (!lockedStore.locked && lastRoute) {
+      navigate(lastRoute)
+    }
+  }, [lockedStore.locked])
+
+  useEffect(() => {
+    const hasPinLoad = async () => {
+      setHasPin(await hasUserSetPinCode(keyChainName))
+    }
+    hasPinLoad()
+  }, [])
+
+  useEffect(() => {
+    const onAppStateChange = nextAppState => {
+      console.log("AppStack: onAppStateChange:", navState?.routes?.[navState.index]?.name)
+      console.log("AppStack: onAppStateChange:", navState?.routes)
+      console.log("AppStack: onAppStateChange:", navState?.routes?.[navState.index]?.name !== "addPass")
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active" &&
+        navState?.routes?.[navState.index]?.name !== "addPass"
+      ) {
+        console.log("KitLock: AppState: App has come to the foreground!");
+        lockedStore.setLocked(true)
+      } else {
+        console.log("KitLock: AppState: App has come to the background!");
+      }
+
+      appState.current = nextAppState;
+      console.log("KitLock: AppState:", appState.current);
+    }
+    AppState.addEventListener("change", onAppStateChange );
+
+    return () => {
+      console.log("KitLock: AppState: removing handler");
+      AppState.removeEventListener("change", onAppStateChange)
+    };
+  }, [navState]);
 
   return (
     <View style={rootViewStyle}>
@@ -63,19 +119,31 @@ const AppStack = () => {
         screenOptions={{headerShown: false}}
         initialRouteName="home"
       >
+        {!lockedStore.locked ?
+          <>
+            <Stack.Screen name="home" component={HomeScreen} />
+            <Stack.Screen name="addPass" component={AddPassScreen} />
+            <Stack.Screen name="viewPass" component={ViewPassScreen} />
+            <Stack.Screen name="qrTest" component={QrScanDevScreen} />
+          </>
+          :
+          <>
+            <Stack.Screen name="lock" component={LockScreen} />
+          </>
+        }
+        {!hasPin &&
+          <>
+            <Stack.Screen name="intro" component={IntroScreen} />
+            <Stack.Screen name="choose" component={ChooseScreen} />
+          </>
+        }
         {/* <Stack.Screen name="welcome" component={WelcomeScreen} /> */}
-        <Stack.Screen name="home" component={HomeScreen} />
-        <Stack.Screen name="intro" component={IntroScreen} />
-        <Stack.Screen name="choose" component={ChooseScreen} />
-        {/* <Stack.Screen name="demo" component={DemoScreen} /> */}
-        <Stack.Screen name="addPass" component={AddPassScreen} />
         {/* <Stack.Screen name="demoList" component={DemoListScreen} /> */}
-        <Stack.Screen name="qrTest" component={QrScanDevScreen} />
-        <Stack.Screen name="viewPass" component={ViewPassScreen} />
+        {/* <Stack.Screen name="demo" component={DemoScreen} /> */}
       </Stack.Navigator>
     </View>
   )
-}
+})
 
 
 interface NavigationProps extends Partial<React.ComponentProps<typeof NavigationContainer>> {}
@@ -97,8 +165,6 @@ export const AppNavigator = observer((props: NavigationProps) => {
         console.log("AppNavigator: user has not set any pin showing INTRO")
         lockedStore.setLocked(false)
         navigate("intro")
-      } else {
-        lockedStore.setLocked(true)
       }
     }
     setIntro()

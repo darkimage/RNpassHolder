@@ -34,19 +34,19 @@ export const KitLock = observer(function KitLock(props: KitLockProps) {
   const navTheme = useNavTheme()
   const theme = useTheme()
   const { onUnlock } = props
-  const appState = useRef(AppState.currentState);
+  // const appState = useRef(AppState.currentState);
 
-  const [show, setShow] = useState(lockedStore.locked)
+  // const [show, setShow] = useState(lockedStore.locked)
 
   console.log("KitLock: locked:", lockedStore.locked)
   
-  useEffect(() => {
-    console.log("KitLock: locked:", lockedStore.locked)
-    if(props.status === 'enter' || props.status === 'locked')
-      setShow(lockedStore.locked)
-    else
-      setShow(true)
-  }, [lockedStore.locked])
+  // useEffect(() => {
+  //   console.log("KitLock: locked:", lockedStore.locked)
+  //   if(props.status === 'enter' || props.status === 'locked')
+  //     setShow(lockedStore.locked)
+  //   else
+  //     setShow(true)
+  // }, [lockedStore.locked])
 
   useEffect(() => {
     // const resetPin = async () => {
@@ -59,29 +59,29 @@ export const KitLock = observer(function KitLock(props: KitLockProps) {
     statusBarStore.setBgColor(navTheme.colors.background)
   }, [])
 
-  useEffect(() => {
-    const onAppStateChange = nextAppState => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === "active"
-      ) {
-        console.log("KitLock: AppState: App has come to the foreground!");
-        lockedStore.setLocked(true)
-        setShow(true)
-      } else {
-        console.log("KitLock: AppState: App has come to the background!");
-      }
+  // useEffect(() => {
+  //   const onAppStateChange = nextAppState => {
+  //     if (
+  //       appState.current.match(/inactive|background/) &&
+  //       nextAppState === "active"
+  //     ) {
+  //       console.log("KitLock: AppState: App has come to the foreground!");
+  //       lockedStore.setLocked(true)
+  //       setShow(true)
+  //     } else {
+  //       console.log("KitLock: AppState: App has come to the background!");
+  //     }
 
-      appState.current = nextAppState;
-      console.log("KitLock: AppState:", appState.current);
-    }
-    AppState.addEventListener("change", onAppStateChange );
+  //     appState.current = nextAppState;
+  //     console.log("KitLock: AppState:", appState.current);
+  //   }
+  //   AppState.addEventListener("change", onAppStateChange );
 
-    return () => {
-      console.log("KitLock: AppState: removing handler");
-      AppState.removeEventListener("change", onAppStateChange)
-    };
-  }, []);
+  //   return () => {
+  //     console.log("KitLock: AppState: removing handler");
+  //     AppState.removeEventListener("change", onAppStateChange)
+  //   };
+  // }, []);
 
   useEffect(() => {
     const onBackPress = () => {
@@ -94,16 +94,14 @@ export const KitLock = observer(function KitLock(props: KitLockProps) {
       }
     }
 
-    if (show) {
-      BackHandler.addEventListener('hardwareBackPress', onBackPress)
-      console.log("KitLock: Added backhandler")
-    }
+    BackHandler.addEventListener('hardwareBackPress', onBackPress)
+    console.log("KitLock: Added backhandler")
 
     return () => {
       console.log("KitLock: Removed Backhandler")
       BackHandler.removeEventListener('hardwareBackPress', onBackPress)
     }
-  }, [props, show])
+  }, [props])
 
   const onFinish = async (pin: string) => {
     const hasPin = await hasUserSetPinCode();
@@ -112,7 +110,7 @@ export const KitLock = observer(function KitLock(props: KitLockProps) {
     console.log("KitLock: pin:", pin)
     const pinFromKeyChain = await Keychain.getInternetCredentials(keyChainName)
     console.log("KitLock: pinFromKeyChain:", pinFromKeyChain)
-    setShow(false)
+    // setShow(false)
     lockedStore.setLocked(false)
   }
 
@@ -172,7 +170,7 @@ export const KitLock = observer(function KitLock(props: KitLockProps) {
     </View>
   )
 
-  return (show &&
+  return (
   <View style={[styles.ROOT, {backgroundColor: navTheme.colors.background}]}>
     <PINCode
       {...props}

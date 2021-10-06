@@ -151,7 +151,6 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
 
   return (
     <View style={styles.ROOT}>
-      <KitLock status="enter" />
       <KitDialog ref={deleteDialog} />
       <KitDialogDatePicker ref={pickerDialog} />
       <KitHeader

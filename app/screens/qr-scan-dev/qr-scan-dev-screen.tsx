@@ -7,6 +7,7 @@ import { Button, Calendar } from "@ui-kitten/components";
 import { KitDialog, KitDialogDatePicker, KitDialogDatePickerRef, KitDialogRef, KitLock, QrScanner } from "../../components";
 import LottieView from "lottie-react-native";
 import PINCode, { hasUserSetPinCode } from "@haskkor/react-native-pincode";
+import { useStores } from "../../models";
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 
@@ -14,6 +15,7 @@ export const QrScanDevScreen = observer(function QrScanDevScreen() {
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
   const [showScanner, setShowScanner] = useState(false)
+  const { lockedStore } = useStores()
   const dialog = useRef<KitDialogRef>(null)
   const dialogPicker = useRef<KitDialogDatePickerRef>(null)
 
@@ -65,7 +67,8 @@ export const QrScanDevScreen = observer(function QrScanDevScreen() {
         onCancel={() => setShowScanner(false)}
       />
       <LottieView source={require("../../../assets/animations/logo-intro.json")} autoPlay />
-      <KitLock status="enter" />
+      {/* <KitLock status="enter" /> */}
+      <Button onPress={() => lockedStore.setLocked(!lockedStore.locked)}>Toggle lock</Button>
     </>
   )
 })
