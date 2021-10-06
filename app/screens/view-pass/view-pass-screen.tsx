@@ -3,7 +3,7 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { BackHandler, Dimensions, ToastAndroid, View } from "react-native"
-import { KitBackAction, KitDialog, KitDialogDatePicker, KitDialogDatePickerRef, KitDialogRef, KitHeader, Screen, ViewPassActionMenu, ViewPassPlaceholder, ViewPassQrDetails } from "../../components"
+import { KitBackAction, KitDialog, KitDialogDatePicker, KitDialogDatePickerRef, KitDialogRef, KitHeader, KitLock, Screen, ViewPassActionMenu, ViewPassPlaceholder, ViewPassQrDetails } from "../../components"
 import { StyleService, useStyleSheet, Layout } from "@ui-kitten/components"
 import { useStores } from "../../models"
 import { getRealmDatabase, QRPass, removePass, setPassExpiration } from "../../services/database"
@@ -151,6 +151,7 @@ export const ViewPassScreen: FC<StackScreenProps<NavigatorParamList, "viewPass">
 
   return (
     <View style={styles.ROOT}>
+      <KitLock status="enter" />
       <KitDialog ref={deleteDialog} />
       <KitDialogDatePicker ref={pickerDialog} />
       <KitHeader

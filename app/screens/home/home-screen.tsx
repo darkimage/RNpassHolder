@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { KitHeader, KitHomeBottomNav, KitThemeSwitch, KitTitle, Screen } from "../../components"
+import { KitHeader, KitHomeBottomNav, KitLock, KitThemeSwitch, KitTitle, Screen } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../../models"
 import { Button, Icon, StyleService, useStyleSheet } from "@ui-kitten/components"
@@ -37,7 +37,9 @@ const AddPass = (props: AppPaddProps) => {
 export const HomeScreen: FC<StackScreenProps<NavigatorParamList, "home">> = observer(function HomeScreen({navigation}) {
   const styles = useStyleSheet(styleScreen)
 
-  return (<View style={styles.VIEWROOT}>
+  return (
+    <View style={styles.VIEWROOT}>
+    <KitLock status="enter" />
     <KitHeader
       setStatusBar={true}
       title={<KitTitle />}

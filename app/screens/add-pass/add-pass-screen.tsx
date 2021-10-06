@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { BackHandler, View } from "react-native"
-import { KitBackAction, KitDialog, KitDialogRef, KitHeader, KitModalLoading, KitSelectSource, QrScanner, QRScannerRef, Screen } from "../../components"
+import { KitBackAction, KitDialog, KitDialogRef, KitHeader, KitLock, KitModalLoading, KitSelectSource, QrScanner, QRScannerRef, Screen } from "../../components"
 import { Icon, Layout, StyleService, TopNavigationAction, useStyleSheet, useTheme } from "@ui-kitten/components"
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useStores } from "../../models"
@@ -62,6 +62,7 @@ export const AddPassScreen: FC<StackScreenProps<NavigatorParamList, "addPass">> 
 
   return (
     <View style={styles.ROOT}>
+      <KitLock status="enter" />
       <KitDialog ref={dialog} />
       <KitModalLoading show={showLoading} />
       <QrScanner

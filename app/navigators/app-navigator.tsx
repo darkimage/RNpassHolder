@@ -8,16 +8,19 @@ import React, { useEffect, useRef, useState } from "react"
 import { AppState, useColorScheme, View, ViewStyle } from "react-native"
 import { NavigationContainer, DefaultTheme, DarkTheme, Theme, useTheme as useNavTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { WelcomeScreen, DemoScreen, DemoListScreen, HomeScreen, AddPassScreen, QrScanDevScreen, ViewPassScreen } from "../screens"
+import { WelcomeScreen, DemoScreen, DemoListScreen, HomeScreen, AddPassScreen, QrScanDevScreen, ViewPassScreen, ChooseScreen } from "../screens"
 import { navigationRef } from "./navigation-utilities"
 import { testKeychain, testREALM } from "../library-tests"
 import { useStores } from "../models"
-import { KitStatusbar } from "../components"
+import { keyChainName, KitLock, KitStatusbar } from "../components"
 import { useTheme } from "@ui-kitten/components"
 import { navigate } from "."
 import AnimatedSplash from 'react-native-animated-splash-screen'
 import { delay } from "../utils/delay"
 import LottieView from "lottie-react-native";
+import { hasUserSetPinCode } from "@haskkor/react-native-pincode"
+import { IntroScreen } from "../screens/intro/intro-screen"
+import { observer } from "mobx-react-lite"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -38,7 +41,9 @@ export type NavigatorParamList = {
   demoList: undefined,
   addPass: undefined,
   qrTest: undefined,
-  viewPass: undefined
+  viewPass: undefined,
+  intro: undefined,
+  choose: undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
@@ -53,18 +58,20 @@ const AppStack = () => {
   }
 
   return (
-    <View style={rootViewStyle}> 
-    <Stack.Navigator
-      screenOptions={{headerShown: false}}
-      initialRouteName="home"
-    >
-      {/* <Stack.Screen name="welcome" component={WelcomeScreen} /> */}
-      <Stack.Screen name="home" component={HomeScreen} />
-      {/* <Stack.Screen name="demo" component={DemoScreen} /> */}
-      <Stack.Screen name="addPass" component={AddPassScreen} />
-      {/* <Stack.Screen name="demoList" component={DemoListScreen} /> */}
-      <Stack.Screen name="qrTest" component={QrScanDevScreen} />
-      <Stack.Screen name="viewPass" component={ViewPassScreen} />
+    <View style={rootViewStyle}>
+      <Stack.Navigator
+        screenOptions={{headerShown: false}}
+        initialRouteName="home"
+      >
+        {/* <Stack.Screen name="welcome" component={WelcomeScreen} /> */}
+        <Stack.Screen name="home" component={HomeScreen} />
+        <Stack.Screen name="intro" component={IntroScreen} />
+        <Stack.Screen name="choose" component={ChooseScreen} />
+        {/* <Stack.Screen name="demo" component={DemoScreen} /> */}
+        <Stack.Screen name="addPass" component={AddPassScreen} />
+        {/* <Stack.Screen name="demoList" component={DemoListScreen} /> */}
+        <Stack.Screen name="qrTest" component={QrScanDevScreen} />
+        <Stack.Screen name="viewPass" component={ViewPassScreen} />
       </Stack.Navigator>
     </View>
   )
@@ -73,24 +80,36 @@ const AppStack = () => {
 
 interface NavigationProps extends Partial<React.ComponentProps<typeof NavigationContainer>> {}
 
-export const AppNavigator = (props: NavigationProps) => {
+export const AppNavigator = observer((props: NavigationProps) => {
   const theme = useTheme()
   const navTheme = useNavTheme()
   const { lockedStore, themeStore, favoritePassStore, currentPassStore, optionShowFavoriteStore } = useStores()
   const [loaded, setLoaded] = useState(false)
-  const appState = useRef(AppState.currentState);
 
   useEffect(() => {
     if (favoritePassStore.id !== '' && optionShowFavoriteStore.show) {
       currentPassStore.setPass(favoritePassStore.id)
       navigate('viewPass')
     }
+
+    const setIntro = async () => {
+      if (!(await hasUserSetPinCode(keyChainName))) {
+        console.log("AppNavigator: user has not set any pin showing INTRO")
+        lockedStore.setLocked(false)
+        navigate("intro")
+      } else {
+        lockedStore.setLocked(true)
+      }
+    }
+    setIntro()
+
     const load = async () => {
       setLoaded(false)
-      await delay(2500)
+      await delay(3500)
       setLoaded(true)
     }
     load()
+
   }, [])
 
   const KitThemeLight: Theme = {
@@ -110,35 +129,12 @@ export const AppNavigator = (props: NavigationProps) => {
     colors: {...KitThemeLight.colors}
   }
 
-  useEffect(() => {
-    const onAppStateChange = nextAppState => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === "active"
-      ) {
-        console.log("AppNavigator: AppState: App has come to the foreground!");
-        lockedStore.setLocked(true)
-      } else {
-        console.log("AppNavigator: AppState: App has come to the background!");
-      }
-
-      appState.current = nextAppState;
-      console.log("AppNavigator: AppState:", appState.current);
-    }
-    AppState.addEventListener("change", onAppStateChange );
-
-    return () => {
-      console.log("AppNavigator: AppState: removing handler");
-      AppState.removeEventListener("change", onAppStateChange)
-    };
-  }, []);
-
   return (
     <AnimatedSplash
       isLoaded={loaded}
       logoHeight={250}
       logoWidth={250}
-      customComponent={<LottieView imageAssetsFolder={'lottie/logo'} source={require("../../assets/animations/logo-intro.json")} autoPlay />}
+      customComponent={<LottieView imageAssetsFolder={'lottie/logo'} source={require("../../assets/animations/logo-intro.json")} autoPlay loop={false} />}
     >
       <NavigationContainer
         ref={navigationRef}
@@ -149,7 +145,7 @@ export const AppNavigator = (props: NavigationProps) => {
       </NavigationContainer>
     </AnimatedSplash>
   )
-}
+})
 
 AppNavigator.displayName = "AppNavigator"
 
@@ -162,5 +158,5 @@ AppNavigator.displayName = "AppNavigator"
  *
  * `canExit` is used in ./app/app.tsx in the `useBackButtonHandler` hook.
  */
-const exitRoutes = ["home"]
+const exitRoutes = ["home", "intro"]
 export const canExit = (routeName: string) => exitRoutes.includes(routeName)

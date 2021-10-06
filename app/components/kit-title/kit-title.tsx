@@ -8,23 +8,28 @@ export interface KitTitleProps {
    * An optional style override useful for padding & margin.
    */
   style?: StyleProp<ViewStyle>
+  /**
+   * An optional style override for Text useful for padding & margin, color etc..
+   */
+  styleText?: StyleProp<ViewStyle>
 }
 
 /**
  * Describe your component here
  */
 export const KitTitle = observer(function KitTitle(props: KitTitleProps) {
-  const style = useStyleSheet(styles);
+  const {style, styleText } = props
+  const styles = useStyleSheet(styleComp)
 
   return (
-    <Layout style={style.LAYOUT}>
-      <Text style={style.TEXTLEFT} category='h3'>safe</Text>
-      <Text style={style.TEXTRIGHT} category='h3'>Pass</Text>
+    <Layout style={[styles.LAYOUT, style]}>
+      <Text style={[styles.TEXTLEFT, styleText]} category='h3'>safe</Text>
+      <Text style={[styles.TEXTRIGHT, styleText]} category='h3'>Pass</Text>
     </Layout>
   )
 })
 
-const styles = StyleService.create({
+const styleComp = StyleService.create({
   LAYOUT: {
     flex: 1,
     flexDirection: "row",

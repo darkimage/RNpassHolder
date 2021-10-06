@@ -1,7 +1,7 @@
 import * as React from "react"
 import { StyleProp, View, ViewStyle, StyleSheet, BackHandler, AppState } from "react-native"
 import { observer } from "mobx-react-lite"
-import PINCode, { IProps, resetPinCodeInternalStates } from "@haskkor/react-native-pincode"
+import PINCode, { deleteUserPinCode, hasUserSetPinCode, IProps, resetPinCodeInternalStates } from "@haskkor/react-native-pincode"
 import { useEffect, useRef, useState } from "react"
 import * as Keychain from 'react-native-keychain';
 import { Icon, StyleService, useStyleSheet, useTheme, Text, Button } from "@ui-kitten/components"
@@ -18,7 +18,12 @@ export interface KitLockProps {
    */
   style?: StyleProp<ViewStyle>,
   status: "choose" | "enter" | "locked";
+  onUnlock?: () => void
 }
+
+export const keyChainName = "safePassUSERPIN"
+export const maxAttemps = 5
+export const timelocked = 180000
 
 /**
  * Describe your component here
@@ -28,8 +33,8 @@ export const KitLock = observer(function KitLock(props: KitLockProps) {
   const styles = useStyleSheet(styleComp)
   const navTheme = useNavTheme()
   const theme = useTheme()
-  const keyChainName = "safePassUSERPIN"
-  const maxAttemps = 1
+  const { onUnlock } = props
+  const appState = useRef(AppState.currentState);
 
   const [show, setShow] = useState(lockedStore.locked)
 
@@ -39,17 +44,44 @@ export const KitLock = observer(function KitLock(props: KitLockProps) {
     console.log("KitLock: locked:", lockedStore.locked)
     if(props.status === 'enter' || props.status === 'locked')
       setShow(lockedStore.locked)
+    else
+      setShow(true)
   }, [lockedStore.locked])
 
   useEffect(() => {
-    const resetPin = async () => {
-      await resetPinCodeInternalStates()
-      console.log("KitLock: resetPinCodeInternalStates: reset")
-    }
-    if (__DEV__)
-      resetPin()
+    // const resetPin = async () => {
+    //   await resetPinCodeInternalStates()
+    //   await deleteUserPinCode(keyChainName)
+    //   console.log("KitLock: resetPinCodeInternalStates: reset")
+    // }
+    // if (__DEV__)
+    //   resetPin()
     statusBarStore.setBgColor(navTheme.colors.background)
   }, [])
+
+  useEffect(() => {
+    const onAppStateChange = nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        console.log("KitLock: AppState: App has come to the foreground!");
+        lockedStore.setLocked(true)
+        setShow(true)
+      } else {
+        console.log("KitLock: AppState: App has come to the background!");
+      }
+
+      appState.current = nextAppState;
+      console.log("KitLock: AppState:", appState.current);
+    }
+    AppState.addEventListener("change", onAppStateChange );
+
+    return () => {
+      console.log("KitLock: AppState: removing handler");
+      AppState.removeEventListener("change", onAppStateChange)
+    };
+  }, []);
 
   useEffect(() => {
     const onBackPress = () => {
@@ -64,16 +96,19 @@ export const KitLock = observer(function KitLock(props: KitLockProps) {
 
     if (show) {
       BackHandler.addEventListener('hardwareBackPress', onBackPress)
-      console.log("KitLockProps: Added backhandler")
+      console.log("KitLock: Added backhandler")
     }
 
     return () => {
-      console.log("KitLockProps: Removed Backhandler")
+      console.log("KitLock: Removed Backhandler")
       BackHandler.removeEventListener('hardwareBackPress', onBackPress)
     }
   }, [props, show])
 
   const onFinish = async (pin: string) => {
+    const hasPin = await hasUserSetPinCode();
+    console.log("KitLock: hasUserSetPinCode:", hasPin)
+    onUnlock?.()
     console.log("KitLock: pin:", pin)
     const pinFromKeyChain = await Keychain.getInternetCredentials(keyChainName)
     console.log("KitLock: pinFromKeyChain:", pinFromKeyChain)
@@ -104,7 +139,7 @@ export const KitLock = observer(function KitLock(props: KitLockProps) {
     subtitleError: translate('pinCode.subtitleError'),
     textButtonLockedPage: translate('pinCode.textButtonLockedPage'),
     textCancelButtonTouchID: translate('pinCode.textCancelButtonTouchID'),
-    textDescriptionLockedPage: translate('pinCode.textDescriptionLockedPage', {timeLocked: maxAttemps}),
+    textDescriptionLockedPage: translate('pinCode.textDescriptionLockedPage', {timeLocked: timelocked/60000}),
     textSubDescriptionLockedPage: translate('pinCode.textSubDescriptionLockedPage'),
     textTitleLockedPage: translate('pinCode.textTitleLockedPage'),
     titleAttemptFailed: translate('pinCode.titleAttemptFailed'),
@@ -156,6 +191,8 @@ export const KitLock = observer(function KitLock(props: KitLockProps) {
       styleLockScreenText={styles.LOCKTEXT}
       styleLockScreenTextTimer={styles.LOCKTIMERTEXT}
       titleComponentLockedPage={titleComponentLockedPage}
+      touchIDDisabled={true}
+      timeLocked={timelocked}
       {...i18n}
     />
   </View>
@@ -165,6 +202,7 @@ export const KitLock = observer(function KitLock(props: KitLockProps) {
 const styleComp = StyleService.create({
   ROOT: {
     ...StyleSheet.absoluteFillObject,
+    zIndex: 99,
   },
   DELICONROOT: {
     justifyContent: "center",

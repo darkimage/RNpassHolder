@@ -91,6 +91,10 @@
     "titleConfirm": "2 - Conferma il codice PIN",
     "titleConfirmFailed": "I PIN non corrispondono"
   },
+  "intro": {
+    "title": "Welcome to",
+    "start": "Start selecting a pin"
+  },
   "demoScreen": {
     "howTo": "HOW TO",
     "title": "What’s In This Stack?",
