@@ -69,20 +69,20 @@ function App() {
   // otherwise, we're ready to render the app
   return (
     // <ToggleStorybook>
-      <RootStoreProvider value={rootStore}>
-        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+    <RootStoreProvider value={rootStore}>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+        <IconRegistry icons={EvaIconsPack} />
+        <KitThemeProvider>
           <ErrorBoundary catchErrors={"always"}>
-            <IconRegistry icons={EvaIconsPack} />
-              <KitThemeProvider>
-              <KitStatusbar />
-              <AppNavigator
-                initialState={initialNavigationState}
-                onStateChange={onNavigationStateChange}
-              />
-            </KitThemeProvider>
+            <KitStatusbar />
+            <AppNavigator
+              initialState={initialNavigationState}
+              onStateChange={onNavigationStateChange}
+            />
           </ErrorBoundary>
-        </SafeAreaProvider>
-      </RootStoreProvider>
+        </KitThemeProvider>
+      </SafeAreaProvider>
+    </RootStoreProvider>
     // </ToggleStorybook>
   )
 }

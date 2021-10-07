@@ -1,61 +1,13 @@
-import React, { ErrorInfo } from "react"
-import { TextStyle, View, ViewStyle, ScrollView, ImageStyle } from "react-native"
-import { color } from "../../theme"
-import { Button, Icon, Text } from "../../components"
-
-const CONTAINER: ViewStyle = {
-  alignItems: "center",
-  flex: 1,
-  padding: 16,
-  paddingVertical: 50,
-  backgroundColor: color.background,
-}
-
-const ERROR_DETAILS_CONTAINER: ViewStyle = {
-  width: "100%",
-  maxHeight: "60%",
-  backgroundColor: color.line,
-  marginVertical: 15,
-  paddingHorizontal: 10,
-  paddingBottom: 15,
-  borderRadius: 6,
-}
-
-const BTN_RESET: ViewStyle = {
-  paddingHorizontal: 40,
-
-  backgroundColor: color.primary,
-}
-
-const TITLE_ERROR: TextStyle = {
-  color: color.error,
-  fontWeight: "bold",
-  paddingVertical: 15,
-}
-
-const FRIENDLY_SUBTITLE: TextStyle = {
-  color: color.palette.black,
-  fontWeight: "normal",
-  paddingVertical: 15,
-}
-
-const CONTENT_ERROR: TextStyle = {
-  color: color.error,
-  fontWeight: "bold",
-  paddingVertical: 15,
-}
+import React, { ErrorInfo, useEffect, useRef } from "react"
+import { View, ScrollView } from "react-native"
+import { StyleService, useStyleSheet, Text, Button, Icon, useTheme } from "@ui-kitten/components"
+import { translate } from "../../i18n"
 
 // Uncomment this and the Text component in the ErrorComponent if
 // you want to see a backtrace in your error reporting screen.
 // const CONTENT_BACKTRACE: TextStyle = {
 //   color: color.dim,
 // }
-
-const ICON: ImageStyle = {
-  marginTop: 30,
-  width: 64,
-  height: 64,
-}
 
 export interface ErrorComponentProps {
   error: Error
@@ -67,18 +19,73 @@ export interface ErrorComponentProps {
  * Describe your component here
  */
 export const ErrorComponent = (props: ErrorComponentProps) => {
+
+  const theme = useTheme()
+  const styles = useStyleSheet(styleComp)
+  const errorIconRef= useRef<Icon<any>>()
+
+  useEffect(() => {
+    if(errorIconRef.current)
+      errorIconRef.current.startAnimation();
+  }, [])
+
   return (
-    <View style={CONTAINER}>
-      <Icon style={ICON} icon="bug" />
-      <Text style={TITLE_ERROR} tx={"errorScreen.title"} />
-      <Text style={FRIENDLY_SUBTITLE} tx={"errorScreen.friendlySubtitle"} />
-      <View style={ERROR_DETAILS_CONTAINER}>
+    <View style={styles.CONTAINER}>
+      <Icon ref={errorIconRef} fill={theme['color-danger-500']} style={styles.ICON} name="alert-circle" animation="pulse" animationConfig={{ cycles: Infinity }}/>
+      <Text style={styles.TITLE_ERROR}>{translate("errorScreen.title")}</Text>
+      <Text appearance="hint" style={styles.FRIENDLY_SUBTITLE}>{translate("errorScreen.friendlySubtitle")}</Text>
+      { __DEV__ && <View style={styles.ERROR_DETAILS_CONTAINER}>
         <ScrollView>
-          <Text selectable style={CONTENT_ERROR} text={`${props.error}`} />
+          <Text selectable style={styles.CONTENT_ERROR}>{`${props.error}`}</Text>
           {/* <Text selectable style={CONTENT_BACKTRACE} text={`${props.errorInfo.componentStack}`} /> */}
         </ScrollView>
-      </View>
-      <Button style={BTN_RESET} onPress={props.onReset} tx="errorScreen.reset" />
+      </View>}
+      <Button status='warning' style={styles.BTN_RESET} onPress={props.onReset}>{translate("errorScreen.reset")}</Button>
     </View>
   )
 }
+
+
+const styleComp = StyleService.create({
+  CONTAINER: {
+    alignItems: "center",
+    justifyContent: 'center',
+    backgroundColor: 'background-basic-color-1',
+    flex: 1,
+    padding: 16,
+    paddingVertical: 50,
+  },
+  ICON: {
+    marginTop: 64,
+    width: 64,
+    height: 64,
+  },
+  ERROR_DETAILS_CONTAINER: {
+    width: "100%",
+    maxHeight: "60%",
+    backgroundColor: 'background-basic-color-4',
+    marginVertical: 15,
+    paddingHorizontal: 10,
+    paddingBottom: 15,
+    borderRadius: 6,
+  },
+  BTN_RESET: {
+    paddingHorizontal: 40,
+    marginTop: 'auto',
+    marginBottom:'auto',
+  },
+  TITLE_ERROR: {
+    color: 'color-danger-500',
+    fontWeight: "bold",
+    paddingVertical: 15,
+  },
+  FRIENDLY_SUBTITLE: {
+    fontWeight: "normal",
+    paddingVertical: 15,
+  },
+  CONTENT_ERROR: {
+    color: 'color-danger-500',
+    fontWeight: "bold",
+    paddingVertical: 15,
+  }
+})
