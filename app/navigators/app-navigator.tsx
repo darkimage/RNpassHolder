@@ -135,10 +135,7 @@ const AppStack = observer(() => {
           </>
         }
         {!hasPin &&
-          <>
-            <Stack.Screen name="intro" component={IntroScreen} />
-            <Stack.Screen name="choose" component={ChooseScreen} />
-          </>
+          <Stack.Screen name="intro" component={IntroScreen} />
         }
         {/* <Stack.Screen name="welcome" component={WelcomeScreen} /> */}
         {/* <Stack.Screen name="demoList" component={DemoListScreen} /> */}
