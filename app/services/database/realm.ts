@@ -1,4 +1,7 @@
 /* eslint-disable react-native/split-platform-components */
+import * as Keychain from 'react-native-keychain';
+import { v4 as uuidv4 } from 'uuid';
+import * as crypto from 'expo-crypto'
 import { KitDialogRef } from './../../components/kit-dialog/kit-dialog';
 import { DecodedQr, decodeFromImage, decodeFromString } from './../qr/greenpass';
 import Realm, { ObjectSchema } from 'realm';
@@ -8,6 +11,8 @@ import { delay } from '../../utils/delay';
 import { translate } from '../../i18n';
 import {ObjectId} from 'bson'
 import { ToastAndroid } from 'react-native';
+
+const dbKey = "realmDBKey"
 
 export const PassSchema: ObjectSchema = {
   name: "Pass",
@@ -64,15 +69,30 @@ export interface QRPass {
   expires?: string
 }
 
+async function genRandomKeyForDatabase(): Promise<string> {
+  const key = await crypto.digestStringAsync(
+    crypto.CryptoDigestAlgorithm.SHA256,
+    uuidv4(),
+  )
+  await Keychain.setInternetCredentials(dbKey, "realmhash", key)
+  return key
+}
+
 export async function getRealmDatabase() {
   // if (__DEV__) {
   //   Realm.deleteFile({
   //     path: "db.realm"
   //   })
   // }
+  const keychainRes = await Keychain.getInternetCredentials(dbKey)
+  // console.log("getRealmDatabase:", keychainRes)
+  const hashedPWD = keychainRes ? keychainRes.password : await genRandomKeyForDatabase()
+  // console.log("getRealmDatabase:", hashedPWD)
+
   return await Realm.open({
     path: "db.realm",
     schema: [PassSchema],
+    encryptionKey: Buffer.from(hashedPWD).buffer
   });
 }
 

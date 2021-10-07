@@ -80,6 +80,7 @@
     "reactotron-react-js": "^3.3.7",
     "reactotron-react-native": "5.0.0",
     "realm": "^10.8.0",
+    "uuid": "^8.3.2",
     "validate.js": "0.13.1"
   },
   "devDependencies": {
