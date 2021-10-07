@@ -27,7 +27,9 @@
     "add": "Aggiungi"
   },
   "options":{
-    "AlwayShowFav": "Mostra pass preferito al lancio"
+    "AlwayShowFav": "Mostra pass preferito al lancio",
+    "resetPinMessage": "Resetta il Codice PIN",
+    "reset": "Resetta"
   },
   "addPass":{
     "addTitle": "Aggiungi un Pass",

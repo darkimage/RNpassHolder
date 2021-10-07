@@ -44,6 +44,18 @@ const optionsData: Array<OptionListItem> = [
     label: translate('options.AlwayShowFav'),
     accessoryRight: <OptionsShowFavoriteToggle />
   },
+  {
+    key: 'ResetPINCode',
+    label: translate('options.resetPinMessage'),
+    accessoryRight: (
+      <Button
+        appearance="outline"
+        onPress={() => navigate('choose')}
+      >
+      {translate('options.reset')}
+      </Button>
+    )
+  },
   ...devItems
 ]
 

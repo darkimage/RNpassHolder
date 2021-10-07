@@ -27,7 +27,9 @@
     "add": "Add"
   },
   "options":{
-    "AlwayShowFav": "Directly show favorite pass"
+    "AlwayShowFav": "Directly show favorite pass",
+    "resetPinMessage": "Reset the PIN Code",
+    "reset": "Reset"
   },
   "addPass":{
     "addTitle": "Add a Pass",

@@ -54,7 +54,7 @@ const AppStack = observer(() => {
   const { colors } = useNavTheme()
   const { lockedStore } = useStores()
   const navState = useNavigationState(state => state)
-  const [lastRoute, setLastRoute] = useState<string>()
+  const [lastRoute, setLastRoute] = useState<string>("home")
   const [hasPin, setHasPin] = useState()
   const appState = useRef(AppState.currentState)
   // const {} = useNavigationState()
@@ -72,7 +72,9 @@ const AppStack = observer(() => {
     console.log("AppStack: lockedStore:", lockedStore.locked)
     console.log("AppStack: navigationRef history:", navState)
     if (lockedStore.locked) {
-      setLastRoute(navState?.routes[navState.index].name)
+      const currentRouteName = navState?.routes[navState.index].name
+      if(currentRouteName !== "lock")
+        setLastRoute(navState?.routes[navState.index].name)
     }
     if (!lockedStore.locked && lastRoute) {
       navigate(lastRoute)
@@ -125,6 +127,7 @@ const AppStack = observer(() => {
             <Stack.Screen name="addPass" component={AddPassScreen} />
             <Stack.Screen name="viewPass" component={ViewPassScreen} />
             <Stack.Screen name="qrTest" component={QrScanDevScreen} />
+            <Stack.Screen name="choose" component={ChooseScreen} />
           </>
           :
           <>
