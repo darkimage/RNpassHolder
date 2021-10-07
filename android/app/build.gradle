@@ -156,6 +156,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('PASSHOLDER_RELEASE_STORE_FILE')) {
+                storeFile file(PASSHOLDER_RELEASE_STORE_FILE)
+                storePassword PASSHOLDER_RELEASE_STORE_PASSWORD
+                keyAlias PASSHOLDER_RELEASE_KEY_ALIAS
+                keyPassword PASSHOLDER_RELEASE_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
@@ -173,7 +181,7 @@ android {
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
-            // For each separate APK per architecture, set a unique version code as described here:
+         //   // For each separate APK per architecture, set a unique version code as described here:
             // https://developer.android.com/studio/build/configure-apk-splits.html
             // Example: versionCode 1 will generate 1001 for armeabi-v7a, 1002 for x86, etc.
             def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { FlatList, FlatListProps, View, ViewStyle } from "react-native"
 import { KitField, KitFieldProps, Screen } from "../../components"
@@ -38,7 +38,7 @@ const devItems: Array<OptionListItem> = [
   }
 ]
 
-const optionsData: Array<OptionListItem> = [
+let optionsData: Array<OptionListItem> = [
   {
     key: 'AlwayShowFav',
     label: translate('options.AlwayShowFav'),
@@ -56,13 +56,18 @@ const optionsData: Array<OptionListItem> = [
       </Button>
     )
   },
-  ...devItems
 ]
 
 export const OptionsScreen = observer(function OptionsScreen() {
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
   const styles = useStyleSheet(stylesScreen)
+  const [data, setData] = useState(optionsData)
+
+  useEffect(() => {
+    if (__DEV__)
+      setData(data.concat(devItems))
+  }, [])
 
   const renderItem = (props: { item: KitFieldProps, index: number, separators }) => {
     return (
@@ -78,7 +83,7 @@ export const OptionsScreen = observer(function OptionsScreen() {
     <Screen style={styles.ROOT} preset="fixed">
       <FlatList
         style={styles.LISTROOT}
-        data={optionsData}
+        data={data}
         renderItem={renderItem}
         ItemSeparatorComponent={() => <Divider style={styles.ITEMDIVIDER} />}
       />
