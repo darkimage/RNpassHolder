@@ -165,6 +165,8 @@ export const AppNavigator = observer((props: NavigationProps) => {
         console.log("AppNavigator: user has not set any pin showing INTRO")
         lockedStore.setLocked(false)
         navigate("intro")
+      } else {
+        lockedStore.setLocked(true)
       }
     }
     setIntro()
